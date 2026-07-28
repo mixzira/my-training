@@ -65,7 +65,6 @@ O design system está em [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) e é a
 ```
 prisma/schema.prisma          modelos e migrations
 src/app/                      rotas (App Router)
-src/components/app-shell/     chrome: global-nav, sub-nav, footer
 src/components/ui/            primitivas do design system
 src/lib/prisma.ts             cliente Prisma (server-only)
 src/lib/cn.ts                 merge de classes Tailwind
