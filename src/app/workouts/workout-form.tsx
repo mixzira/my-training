@@ -76,7 +76,7 @@ export function WorkoutForm({
     <form
       action={formAction}
       noValidate
-      className="flex w-full max-w-[520px] flex-col gap-md rounded-lg border border-hairline bg-canvas p-lg"
+      className="flex flex-col gap-md"
     >
       {workout ? <input type="hidden" name="id" value={workout.id} /> : null}
       {selected.map((id, index) => (

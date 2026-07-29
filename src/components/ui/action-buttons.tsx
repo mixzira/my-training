@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { PencilIcon, TrashIcon } from "@/components/icons";
 import { cn } from "@/lib/cn";
 
@@ -29,35 +27,16 @@ export function EditActionButton({
 
 export function DeleteActionButton({
   label,
-  pending,
+  onClick,
 }: {
   label: string;
-  pending: boolean;
+  onClick: () => void;
 }) {
-  const [armed, setArmed] = useState(false);
-
-  if (armed) {
-    return (
-      <button
-        type="submit"
-        aria-label={`Confirmar exclusão de ${label}`}
-        disabled={pending}
-        className={cn(
-          shape,
-          "w-auto border-ink bg-ink px-sm text-caption-strong text-canvas",
-        )}
-      >
-        {pending ? "…" : "Confirmar"}
-      </button>
-    );
-  }
-
   return (
     <button
       type="button"
       aria-label={`Excluir ${label}`}
-      disabled={pending}
-      onClick={() => setArmed(true)}
+      onClick={onClick}
       className={cn(shape, "text-ink")}
     >
       <TrashIcon className="size-5" />

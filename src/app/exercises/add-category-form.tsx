@@ -3,15 +3,22 @@
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/ui/modal";
 
 import { CategoryForm } from "./category-form";
 
 export function AddCategoryForm() {
   const [open, setOpen] = useState(false);
 
-  if (!open) {
-    return <Button onClick={() => setOpen(true)}>+ Categoria</Button>;
-  }
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>+ Categoria</Button>
 
-  return <CategoryForm onClose={() => setOpen(false)} />;
+      {open && (
+        <Modal open onClose={() => setOpen(false)} title="Nova categoria">
+          <CategoryForm onClose={() => setOpen(false)} />
+        </Modal>
+      )}
+    </>
+  );
 }

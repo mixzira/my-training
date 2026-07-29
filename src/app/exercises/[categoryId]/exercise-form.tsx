@@ -36,7 +36,7 @@ export function ExerciseForm({
     <form
       action={formAction}
       noValidate
-      className="flex w-full max-w-130 flex-col gap-md rounded-lg border border-hairline bg-canvas p-lg"
+      className="flex flex-col gap-md"
     >
       {exercise ? (
         <input type="hidden" name="id" value={exercise.id} />

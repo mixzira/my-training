@@ -1,13 +1,14 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useState } from "react";
 
 import {
   DeleteActionButton,
   EditActionButton,
 } from "@/components/ui/action-buttons";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { LongPressActions } from "@/components/ui/long-press-actions";
-import { INITIAL_ACTION_STATE } from "@/lib/form";
+import { Modal } from "@/components/ui/modal";
 
 import { deleteExercise } from "./actions";
 import { ExerciseForm } from "./exercise-form";
@@ -27,39 +28,24 @@ export function ExerciseCard({
   exercise: ExerciseCardData;
 }) {
   const [editing, setEditing] = useState(false);
-  const [state, formAction, pending] = useActionState(
-    deleteExercise,
-    INITIAL_ACTION_STATE,
-  );
-
-  if (editing) {
-    return (
-      <ExerciseForm
-        categoryId={categoryId}
-        exercise={exercise}
-        onClose={() => setEditing(false)}
-      />
-    );
-  }
-
-  const message = state.error ?? state.warning;
+  const [confirming, setConfirming] = useState(false);
 
   return (
-    <LongPressActions
-      actions={
-        <>
-          <EditActionButton
-            label={`Editar ${exercise.name}`}
-            onClick={() => setEditing(true)}
-          />
-          <form action={formAction} className="contents">
-            <input type="hidden" name="id" value={exercise.id} />
-            <DeleteActionButton label={exercise.name} pending={pending} />
-          </form>
-        </>
-      }
-    >
-      <div className="flex flex-col gap-xxs">
+    <>
+      <LongPressActions
+        actions={
+          <>
+            <EditActionButton
+              label={`Editar ${exercise.name}`}
+              onClick={() => setEditing(true)}
+            />
+            <DeleteActionButton
+              label={exercise.name}
+              onClick={() => setConfirming(true)}
+            />
+          </>
+        }
+      >
         <div className="flex items-center gap-md rounded-lg border border-hairline bg-canvas p-lg">
           <video
             src={exercise.videoUrl}
@@ -74,13 +60,28 @@ export function ExerciseCard({
             {exercise.name}
           </p>
         </div>
+      </LongPressActions>
 
-        {message ? (
-          <p role="alert" className="text-fine-print text-danger">
-            {message}
-          </p>
-        ) : null}
-      </div>
-    </LongPressActions>
+      {editing && (
+        <Modal open onClose={() => setEditing(false)} title="Editar exercício">
+          <ExerciseForm
+            categoryId={categoryId}
+            exercise={exercise}
+            onClose={() => setEditing(false)}
+          />
+        </Modal>
+      )}
+
+      {confirming && (
+        <ConfirmDialog
+          open
+          onClose={() => setConfirming(false)}
+          title="Excluir exercício"
+          message={`Excluir "${exercise.name}"? Esta ação não pode ser desfeita.`}
+          action={deleteExercise}
+          hidden={{ id: exercise.id }}
+        />
+      )}
+    </>
   );
 }

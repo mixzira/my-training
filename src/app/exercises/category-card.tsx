@@ -2,14 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useState } from "react";
 
 import {
   DeleteActionButton,
   EditActionButton,
 } from "@/components/ui/action-buttons";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { LongPressActions } from "@/components/ui/long-press-actions";
-import { INITIAL_ACTION_STATE } from "@/lib/form";
+import { Modal } from "@/components/ui/modal";
 
 import { deleteCategory } from "./actions";
 import { CategoryForm } from "./category-form";
@@ -24,33 +25,24 @@ export type CategoryCardData = {
 
 export function CategoryCard({ category }: { category: CategoryCardData }) {
   const [editing, setEditing] = useState(false);
-  const [state, formAction, pending] = useActionState(
-    deleteCategory,
-    INITIAL_ACTION_STATE,
-  );
-
-  if (editing) {
-    return <CategoryForm category={category} onClose={() => setEditing(false)} />;
-  }
-
-  const message = state.error ?? state.warning;
+  const [confirming, setConfirming] = useState(false);
 
   return (
-    <LongPressActions
-      actions={
-        <>
-          <EditActionButton
-            label={`Editar ${category.name}`}
-            onClick={() => setEditing(true)}
-          />
-          <form action={formAction} className="contents">
-            <input type="hidden" name="id" value={category.id} />
-            <DeleteActionButton label={category.name} pending={pending} />
-          </form>
-        </>
-      }
-    >
-      <div className="flex flex-col gap-xxs">
+    <>
+      <LongPressActions
+        actions={
+          <>
+            <EditActionButton
+              label={`Editar ${category.name}`}
+              onClick={() => setEditing(true)}
+            />
+            <DeleteActionButton
+              label={category.name}
+              onClick={() => setConfirming(true)}
+            />
+          </>
+        }
+      >
         <Link
           href={`/exercises/${category.id}`}
           className="flex items-center gap-md rounded-lg border border-hairline bg-canvas p-4"
@@ -60,7 +52,7 @@ export function CategoryCard({ category }: { category: CategoryCardData }) {
             alt=""
             width={72}
             height={72}
-            className="size-22 shrink-0 rounded-sm bg-canvas-parchment object-cover aspect-square"
+            className="size-22 aspect-square shrink-0 rounded-sm bg-canvas-parchment object-cover"
             unoptimized
           />
           <div className="min-w-0">
@@ -70,13 +62,24 @@ export function CategoryCard({ category }: { category: CategoryCardData }) {
             </p>
           </div>
         </Link>
+      </LongPressActions>
 
-        {message ? (
-          <p role="alert" className="text-fine-print text-danger">
-            {message}
-          </p>
-        ) : null}
-      </div>
-    </LongPressActions>
+      {editing && (
+        <Modal open onClose={() => setEditing(false)} title="Editar categoria">
+          <CategoryForm category={category} onClose={() => setEditing(false)} />
+        </Modal>
+      )}
+
+      {confirming && (
+        <ConfirmDialog
+          open
+          onClose={() => setConfirming(false)}
+          title="Excluir categoria"
+          message={`Excluir "${category.name}"? Os exercícios dela também serão excluídos. Esta ação não pode ser desfeita.`}
+          action={deleteCategory}
+          hidden={{ id: category.id }}
+        />
+      )}
+    </>
   );
 }
