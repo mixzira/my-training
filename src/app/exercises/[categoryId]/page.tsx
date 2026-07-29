@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { Header } from "@/components/ui/header";
 import { Tile } from "@/components/ui/tile";
 import { prisma } from "@/lib/prisma";
 import { createFileUrl } from "@/lib/storage";
@@ -33,28 +34,31 @@ export default async function CategoryExercisesPage({
   );
 
   return (
-    <Tile surface="parchment" className="pb-section">
-      <h1 className="text-display-md font-display lg:text-display-lg">
-        Exercícios de {category.name}
-      </h1>
+    <>
+      <Header />
+      <Tile surface="parchment" className="pb-section">
+        <h1 className="text-display-md font-display lg:text-display-lg">
+          Exercícios de {category.name}
+        </h1>
 
-      <div className="mt-lg">
-        <AddExerciseForm categoryId={category.id} />
-      </div>
+        <div className="mt-lg">
+          <AddExerciseForm categoryId={category.id} />
+        </div>
 
-      {cards.length === 0 ? (
-        <p className="mt-xl max-w-[36ch] text-body text-ink-muted-80">
-          Nenhum exercício nesta categoria ainda.
-        </p>
-      ) : (
-        <ul className="mt-xl grid grid-cols-1 gap-sm lg:grid-cols-2 xl:grid-cols-3">
-          {cards.map((exercise) => (
-            <li key={exercise.id}>
-              <ExerciseCard categoryId={category.id} exercise={exercise} />
-            </li>
-          ))}
-        </ul>
-      )}
-    </Tile>
+        {cards.length === 0 ? (
+          <p className="mt-xl max-w-[36ch] text-body text-ink-muted-80">
+            Nenhum exercício nesta categoria ainda.
+          </p>
+        ) : (
+          <ul className="mt-xl grid grid-cols-1 gap-sm lg:grid-cols-2 xl:grid-cols-3">
+            {cards.map((exercise) => (
+              <li key={exercise.id}>
+                <ExerciseCard categoryId={category.id} exercise={exercise} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </Tile>
+    </>
   );
 }

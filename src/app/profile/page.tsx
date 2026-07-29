@@ -1,3 +1,5 @@
+import { Header } from "@/components/ui/header";
+
 export default function ProfilePage() {
-  return null;
+  return <Header />;
 }

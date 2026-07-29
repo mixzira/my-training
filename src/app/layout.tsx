@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 
 import { FloatingMenu } from "@/components/ui/floating-menu";
-import { Header } from "@/components/ui/header";
+import { NavHistoryProvider } from "@/components/ui/nav-history";
 
 import "./globals.css";
 
@@ -35,8 +35,9 @@ export default function RootLayout({
       className={`${inter.variable} h-full`}
     >
       <body className="flex min-h-full flex-col">
-        <Header />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          <NavHistoryProvider>{children}</NavHistoryProvider>
+        </main>
         <FloatingMenu />
       </body>
     </html>

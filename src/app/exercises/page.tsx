@@ -1,3 +1,4 @@
+import { Header } from "@/components/ui/header";
 import { Tile } from "@/components/ui/tile";
 import { prisma } from "@/lib/prisma";
 import { createFileUrl } from "@/lib/storage";
@@ -33,29 +34,32 @@ export default async function ExercisesPage() {
   );
 
   return (
-    <Tile surface="parchment" className="pb-section">
-      <h1 className="text-display-md font-display lg:text-display-lg">
-        Exercícios
-      </h1>
+    <>
+      <Header />
+      <Tile surface="parchment" className="pb-section">
+        <h1 className="text-display-md font-display lg:text-display-lg">
+          Exercícios
+        </h1>
 
-      <div className="mt-lg">
-        <AddCategoryForm />
-      </div>
+        <div className="mt-lg">
+          <AddCategoryForm />
+        </div>
 
-      {cards.length === 0 ? (
-        <p className="mt-xl max-w-[36ch] text-body text-ink-muted-80">
-          Nenhuma categoria ainda. Crie a primeira para começar a organizar seus
-          exercícios.
-        </p>
-      ) : (
-        <ul className="mt-xl grid grid-cols-1 gap-sm lg:grid-cols-2 xl:grid-cols-3">
-          {cards.map((category) => (
-            <li key={category.id}>
-              <CategoryCard category={category} />
-            </li>
-          ))}
-        </ul>
-      )}
-    </Tile>
+        {cards.length === 0 ? (
+          <p className="mt-xl max-w-[36ch] text-body text-ink-muted-80">
+            Nenhuma categoria ainda. Crie a primeira para começar a organizar
+            seus exercícios.
+          </p>
+        ) : (
+          <ul className="mt-xl grid grid-cols-1 gap-sm lg:grid-cols-2 xl:grid-cols-3">
+            {cards.map((category) => (
+              <li key={category.id}>
+                <CategoryCard category={category} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </Tile>
+    </>
   );
 }

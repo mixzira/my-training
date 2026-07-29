@@ -204,6 +204,66 @@
   animation: none;
 }
 
+::view-transition-group(app-header) {
+  animation: none;
+  z-index: 100;
+}
+
+::view-transition-old(app-header) {
+  display: none;
+}
+
+::view-transition-new(app-header) {
+  animation: none;
+}
+
+::view-transition-group(floating-menu) {
+  animation: none;
+  z-index: 100;
+}
+
+::view-transition-old(floating-menu) {
+  display: none;
+}
+
+::view-transition-new(floating-menu) {
+  animation: none;
+}
+
+::view-transition-group(back-button) {
+  z-index: 101;
+}
+
+::view-transition-old(.back-exit) {
+  animation: 300ms cubic-bezier(0.4, 0, 1, 1) both back-button-out;
+}
+
+::view-transition-new(.back-enter) {
+  animation: 300ms cubic-bezier(0, 0, 0.2, 1) both back-button-in;
+}
+
+@keyframes back-button-out {
+  from {
+    opacity: 1;
+    translate: 0;
+  }
+  to {
+    opacity: 0;
+    translate: -12px;
+  }
+}
+
+@keyframes back-button-in {
+  from {
+    opacity: 0;
+    translate: -12px;
+  }
+  to {
+    opacity: 1;
+    translate: 0;
+  }
+}
+
 ::view-transition-old(.page-exit) {
   animation: 300ms cubic-bezier(0.4, 0, 1, 1) both page-slide-out;
 }
@@ -231,6 +291,36 @@
   to {
     opacity: 0;
     translate: -40px;
+  }
+}
+
+::view-transition-old(.page-exit-back) {
+  animation: 300ms cubic-bezier(0.4, 0, 1, 1) both page-slide-out-back;
+}
+
+::view-transition-new(.page-enter-back) {
+  animation: 300ms cubic-bezier(0, 0, 0.2, 1) both page-slide-in-back;
+}
+
+@keyframes page-slide-in-back {
+  from {
+    opacity: 0;
+    translate: -40px;
+  }
+  to {
+    opacity: 1;
+    translate: 0;
+  }
+}
+
+@keyframes page-slide-out-back {
+  from {
+    opacity: 1;
+    translate: 0;
+  }
+  to {
+    opacity: 0;
+    translate: 40px;
   }
 }
 
