@@ -600,7 +600,62 @@ A tabela de breakpoints acima é lida **de baixo para cima**. Escreva o estilo d
 | `xl` | 1068px | small desktop |
 | `2xl` | 1440px | content lock |
 
-## Extensão: estado de erro
+## Extensão: temas
+
+O documento original descreve só a variante clara (registrado em *Known Gaps*: *"the system documented is the daytime/light-dominant variant"*). Esta é a extensão do projeto.
+
+**Tema padrão: escuro.** Definido em `<html data-theme="dark">`.
+
+### Como funciona
+
+Os tokens de cor vivem em `@theme` **sem** `inline`. Isso é o ponto todo: sem `inline`, o Tailwind v4 compila `bg-canvas` para `background-color: var(--color-canvas)`. Trocar a variável num escopo troca a aparência inteira, sem tocar em uma linha de componente.
+
+```css
+.bg-canvas { background-color: var(--color-canvas) }   /* gerado */
+```
+
+Fontes ficam em `@theme inline`, porque referenciam `var(--font-inter)` e precisam resolver no elemento de uso, não onde foram declaradas.
+
+Os valores **escuros são o default**, dentro do `@theme`. O tema claro é um bloco de override:
+
+```css
+[data-theme="light"] { --color-canvas: #ffffff; … }
+```
+
+Variantes `dark:` e `light:` estão registradas via `@custom-variant`, ligadas ao mesmo atributo. Use-as só onde uma cor **não pode** ser resolvida por token — ver abaixo.
+
+### Mapa dos tokens
+
+| Token | Claro | Escuro | Papel |
+|---|---|---|---|
+| `canvas-parchment` | `#f5f5f7` | `#000000` | fundo da página |
+| `canvas` | `#ffffff` | `#1d1d1f` | superfície de card |
+| `surface-pearl` | `#fafafc` | `#252527` | botão fantasma |
+| `ink` | `#1d1d1f` | `#f5f5f7` | texto |
+| `ink-muted-80` | `#333333` | `#cccccc` | texto secundário |
+| `ink-muted-48` | `#7a7a7a` | `#8e8e93` | texto terciário |
+| `hairline` | `#e0e0e0` | `#38383a` | fio de 1px |
+| `divider-soft` | `#f0f0f0` | `#2c2c2e` | fio suave |
+| `primary` | `#0066cc` | `#0071e3` | preenchimento de ação |
+| `primary-focus` | `#0071e3` | `#409cff` | anel de foco |
+| `danger` | `#d70015` | `#ff453a` | estado de erro |
+
+`on-dark`, `body-on-dark`, `body-muted`, `surface-black` e `surface-tile-1/2/3` **não mudam**: são superfícies e textos absolutamente escuros por definição. No tema escuro os tiles passam a ler como *elevação* em vez de contraste — que é a inversão correta: em interface escura, elevar clareia.
+
+### A exceção: o azul tem dois valores por superfície
+
+Um único token de azul não resolve os dois papéis no tema escuro:
+
+- `primary` como **preenchimento** precisa ser escuro o bastante para texto branco em cima. `#0071e3` com branco dá **4,70:1** ✓
+- O mesmo `#0071e3` como **texto** sobre card `#1d1d1f` dá **3,62:1** ✗
+
+Por isso o link e o botão fantasma trocam para `primary-on-dark` (`#2997ff`), que sobre `#1d1d1f` dá **5,64:1** ✓. É a mesma regra que o documento original já prescreve — "Don't use Sky Link Blue on light surfaces" — só que agora expressa como variante:
+
+```
+text-primary dark:text-primary-on-dark
+```
+
+Esses são os **únicos** lugares que precisam de `dark:`. Todo o resto resolve por token.
 
 O documento original registra em *Known Gaps* que estados de validação e erro **não foram observados** nas páginas analisadas. Esta é a extensão do projeto para preencher essa lacuna.
 

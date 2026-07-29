@@ -60,6 +60,8 @@ O design system está em [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) e é a
 8. Faixas full-bleed (`Tile`) não têm raio. Cards utilitários usam `rounded-lg`. Ações usam `rounded-pill`.
 9. Textos da interface em português do Brasil.
 10. **Vermelho é estado, não acento.** `danger` / `danger-on-dark` só aparecem em erro. Campos usam `<Field error={...}>` e `<Input invalid>`; nunca invente uma apresentação de erro nova.
+11. **Escreva só com token semântico, nunca com `dark:`.** O tema troca sozinho porque os tokens de cor estão em `@theme` sem `inline` — `bg-canvas` vira `var(--color-canvas)` e `[data-theme="light"]` sobrescreve. Se você precisou de `dark:` para uma cor, o token está errado; conserte o token. A única exceção legítima já existe e está documentada: `text-primary dark:text-primary-on-dark`, porque azul de preenchimento e azul de texto não podem ser o mesmo valor no escuro.
+12. **Nunca assuma superfície clara.** `text-ink` sobre `bg-canvas` funciona nos dois temas; `text-on-dark` só vale sobre `surface-tile-*` e `surface-black`, que são escuros por definição em qualquer tema.
 
 ## Estilo de código
 

@@ -19,9 +19,9 @@ const variants: Record<ButtonVariant, string> = {
   primary:
     "bg-primary text-on-primary text-body rounded-pill px-[22px] py-[11px]",
   secondary:
-    "bg-transparent text-primary text-body rounded-pill px-[22px] py-[11px] border border-primary",
+    "bg-transparent text-primary border-primary dark:text-primary-on-dark dark:border-primary-on-dark text-body rounded-pill px-[22px] py-[11px] border",
   "dark-utility":
-    "bg-ink text-on-dark text-button-utility rounded-sm px-[15px] py-xs",
+    "bg-ink text-canvas text-button-utility rounded-sm px-[15px] py-xs",
   pearl:
     "bg-surface-pearl text-ink-muted-80 text-caption rounded-md px-[14px] py-xs border border-divider-soft",
   hero: "bg-primary text-on-primary text-button-large rounded-pill px-[28px] py-[14px]",
@@ -78,7 +78,9 @@ export function TextLink({
     <Link
       className={cn(
         "text-body",
-        onDark ? "text-primary-on-dark" : "text-primary",
+        onDark
+          ? "text-primary-on-dark"
+          : "text-primary dark:text-primary-on-dark",
         className,
       )}
       {...props}

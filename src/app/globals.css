@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
+@theme inline {
+  --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont,
+    "SF Pro Text", sans-serif;
+  --font-display: var(--font-inter), system-ui, -apple-system,
+    BlinkMacSystemFont, "SF Pro Display", sans-serif;
+}
+
 @theme {
   --breakpoint-sm: 480px;
   --breakpoint-md: 640px;
@@ -7,37 +17,32 @@
   --breakpoint-xl: 1068px;
   --breakpoint-2xl: 1440px;
 
-  --color-primary: #0066cc;
-  --color-primary-focus: #0071e3;
+  --color-primary: #0071e3;
+  --color-primary-focus: #409cff;
   --color-primary-on-dark: #2997ff;
   --color-on-primary: #ffffff;
 
-  --color-danger: #d70015;
+  --color-danger: #ff453a;
   --color-danger-on-dark: #ff453a;
 
-  --color-ink: #1d1d1f;
-  --color-ink-muted-80: #333333;
-  --color-ink-muted-48: #7a7a7a;
+  --color-ink: #f5f5f7;
+  --color-ink-muted-80: #cccccc;
+  --color-ink-muted-48: #8e8e93;
   --color-on-dark: #ffffff;
   --color-body-on-dark: #ffffff;
   --color-body-muted: #cccccc;
 
-  --color-canvas: #ffffff;
-  --color-canvas-parchment: #f5f5f7;
-  --color-surface-pearl: #fafafc;
+  --color-canvas: #1d1d1f;
+  --color-canvas-parchment: #000000;
+  --color-surface-pearl: #252527;
   --color-surface-tile-1: #272729;
   --color-surface-tile-2: #2a2a2c;
   --color-surface-tile-3: #252527;
   --color-surface-black: #000000;
-  --color-surface-chip-translucent: #d2d2d7;
+  --color-surface-chip-translucent: #48484a;
 
-  --color-divider-soft: #f0f0f0;
-  --color-hairline: #e0e0e0;
-
-  --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont,
-    "SF Pro Text", sans-serif;
-  --font-display: var(--font-inter), system-ui, -apple-system,
-    BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  --color-divider-soft: #2c2c2e;
+  --color-hairline: #38383a;
 
   --text-hero-display: 56px;
   --text-hero-display--line-height: 1.07;
@@ -137,6 +142,34 @@
   --spacing-touch: 44px;
   --spacing-nav: 44px;
   --spacing-subnav: 52px;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --color-primary: #0066cc;
+  --color-primary-focus: #0071e3;
+  --color-primary-on-dark: #2997ff;
+  --color-on-primary: #ffffff;
+
+  --color-danger: #d70015;
+  --color-danger-on-dark: #ff453a;
+
+  --color-ink: #1d1d1f;
+  --color-ink-muted-80: #333333;
+  --color-ink-muted-48: #7a7a7a;
+
+  --color-canvas: #ffffff;
+  --color-canvas-parchment: #f5f5f7;
+  --color-surface-pearl: #fafafc;
+  --color-surface-chip-translucent: #d2d2d7;
+
+  --color-divider-soft: #f0f0f0;
+  --color-hairline: #e0e0e0;
 }
 
 @layer base {

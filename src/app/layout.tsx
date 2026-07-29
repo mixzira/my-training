@@ -18,14 +18,21 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#000000",
+  colorScheme: "dark",
   viewportFit: "cover",
 };
+
+export const DEFAULT_THEME = "dark";
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} h-full`}>
+    <html
+      lang="pt-BR"
+      data-theme={DEFAULT_THEME}
+      className={`${inter.variable} h-full`}
+    >
       <body className="flex min-h-full flex-col">
         <main className="flex-1">{children}</main>
         <FloatingMenu />

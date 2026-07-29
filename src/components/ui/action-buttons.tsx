@@ -44,7 +44,7 @@ export function DeleteActionButton({
         disabled={pending}
         className={cn(
           shape,
-          "w-auto border-ink bg-ink px-sm text-caption-strong text-on-dark",
+          "w-auto border-ink bg-ink px-sm text-caption-strong text-canvas",
         )}
       >
         {pending ? "…" : "Confirmar"}
