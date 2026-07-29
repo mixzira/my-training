@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 
+import { FloatingMenu } from "@/components/ui/floating-menu";
+
 import "./globals.css";
 
 const inter = Inter({
@@ -26,6 +28,7 @@ export default function RootLayout({
     <html lang="pt-BR" className={`${inter.variable} h-full`}>
       <body className="flex min-h-full flex-col">
         <main className="flex-1">{children}</main>
+        <FloatingMenu />
       </body>
     </html>
   );
