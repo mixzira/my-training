@@ -20,6 +20,7 @@ export type WorkoutOption = { id: string; name: string };
 export type RoutineDraft = {
   id: string;
   name: string;
+  startDate: string;
   slots: { id: string; type: "WORKOUT" | "REST"; workoutId: string | null }[];
 };
 
@@ -36,10 +37,12 @@ const rowButton =
 export function RoutineForm({
   routine,
   workouts,
+  today,
   onClose,
 }: {
   routine?: RoutineDraft;
   workouts: WorkoutOption[];
+  today: string;
   onClose: () => void;
 }) {
   const [state, formAction, pending] = useActionState(
@@ -123,6 +126,19 @@ export function RoutineForm({
           placeholder="Ciclo ABC + descanso"
           maxLength={80}
           invalid={Boolean(state.fieldErrors?.name)}
+        />
+      </Field>
+
+      <Field
+        label="Data de início"
+        hint="Dias antes desta data contam como concluídos."
+        error={state.fieldErrors?.startDate}
+      >
+        <Input
+          type="date"
+          name="startDate"
+          defaultValue={routine?.startDate ?? today}
+          invalid={Boolean(state.fieldErrors?.startDate)}
         />
       </Field>
 

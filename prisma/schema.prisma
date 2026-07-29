@@ -45,6 +45,7 @@ model Workout {
 model Routine {
   id            String    @id @default(cuid())
   name          String
+  startDate     DateTime  @default(now())
   currentSlotId String?   @unique
   currentSince  DateTime?
   createdAt     DateTime  @default(now())

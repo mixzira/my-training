@@ -12,9 +12,11 @@ import { RoutineForm, type RoutineDraft, type WorkoutOption } from "./routine-fo
 export function RoutineActions({
   routine,
   workouts,
+  today,
 }: {
   routine: RoutineDraft;
   workouts: WorkoutOption[];
+  today: string;
 }) {
   const [editing, setEditing] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -33,6 +35,7 @@ export function RoutineActions({
           <RoutineForm
             routine={routine}
             workouts={workouts}
+            today={today}
             onClose={() => setEditing(false)}
           />
         </Modal>

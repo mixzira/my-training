@@ -10,8 +10,31 @@ const SLOTS_REQUIRED = "Adicione pelo menos um slot à fila.";
 const BAD_SLOTS = "Não foi possível ler a fila. Recarregue a página e tente de novo.";
 const STALE_WORKOUT =
   "Um dos treinos selecionados não existe mais. Recarregue a página e tente de novo.";
+const DATE_REQUIRED = "Informe uma data de início válida.";
 
 type SlotInput = { id?: string; type: "WORKOUT" | "REST"; workoutId?: string };
+
+function parseStartDate(value: FormDataEntryValue | null): Date | null {
+  if (typeof value !== "string") return null;
+
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return null;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(year, month - 1, day);
+
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return null;
+  }
+
+  return date;
+}
 
 function parseSlots(formData: FormData): SlotInput[] | null {
   const slots: SlotInput[] = [];
@@ -63,6 +86,9 @@ export async function createRoutine(
   const name = parseText(formData.get("name"));
   if (name === null) return fieldError("name", NAME_REQUIRED);
 
+  const startDate = parseStartDate(formData.get("startDate"));
+  if (startDate === null) return fieldError("startDate", DATE_REQUIRED);
+
   const slots = parseSlots(formData);
   if (slots === null) return { error: BAD_SLOTS };
   if (slots.length === 0) return fieldError("slots", SLOTS_REQUIRED);
@@ -80,6 +106,7 @@ export async function createRoutine(
   const routine = await prisma.routine.create({
     data: {
       name,
+      startDate,
       slots: {
         create: slots.map((slot, position) => ({
           position,
@@ -95,7 +122,7 @@ export async function createRoutine(
   if (firstSlotId) {
     await prisma.routine.update({
       where: { id: routine.id },
-      data: { currentSlotId: firstSlotId, currentSince: new Date() },
+      data: { currentSlotId: firstSlotId, currentSince: startDate },
     });
   }
 
@@ -113,6 +140,9 @@ export async function updateRoutine(
 
   const name = parseText(formData.get("name"));
   if (name === null) return fieldError("name", NAME_REQUIRED);
+
+  const startDate = parseStartDate(formData.get("startDate"));
+  if (startDate === null) return fieldError("startDate", DATE_REQUIRED);
 
   const slots = parseSlots(formData);
   if (slots === null) return { error: BAD_SLOTS };
@@ -193,8 +223,9 @@ export async function updateRoutine(
       where: { id },
       data: {
         name,
+        startDate,
         currentSlotId: nextCurrentId,
-        ...(currentSurvives ? {} : { currentSince: new Date() }),
+        ...(currentSurvives ? {} : { currentSince: startDate }),
       },
     });
   });

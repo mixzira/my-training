@@ -7,6 +7,21 @@ import { RoutineActions } from "./routine-actions";
 
 export const dynamic = "force-dynamic";
 
+const dateFormat = new Intl.DateTimeFormat("pt-BR");
+
+function toDateInput(date: Date): string {
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+function dayStart(date: Date): number {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+}
+
+function daysSince(start: Date, now: Date): number {
+  return Math.round((dayStart(now) - dayStart(start)) / 86400000);
+}
+
 export default async function RoutinePage() {
   const [routine, workouts] = await Promise.all([
     prisma.routine.findFirst({
@@ -23,6 +38,15 @@ export default async function RoutinePage() {
     }),
   ]);
 
+  const now = new Date();
+  const today = toDateInput(now);
+
+  const elapsed = routine ? daysSince(routine.startDate, now) : 0;
+  const started = Boolean(routine && routine.slots.length > 0 && elapsed >= 0);
+  const currentIndex =
+    routine && started ? elapsed % routine.slots.length : -1;
+  const daysUntil = elapsed < 0 ? -elapsed : 0;
+
   return (
     <>
       <Header />
@@ -37,17 +61,30 @@ export default async function RoutinePage() {
               Nenhuma rotina ainda. Monte uma fila de treinos e descansos.
             </p>
             <div className="mt-lg">
-              <CreateRoutine workouts={workouts} />
+              <CreateRoutine workouts={workouts} today={today} />
             </div>
           </>
         ) : (
           <div className="mt-lg flex flex-col gap-lg">
             <div className="flex flex-col gap-sm">
               <p className="text-body-strong text-ink">{routine.name}</p>
+              {started ? (
+                <p className="text-caption text-ink-muted-48">
+                  Início: {dateFormat.format(routine.startDate)}
+                </p>
+              ) : (
+                <p className="text-caption text-ink-muted-80">
+                  Começa em {dateFormat.format(routine.startDate)}
+                  {daysUntil > 0
+                    ? ` · em ${daysUntil} dia${daysUntil > 1 ? "s" : ""}`
+                    : ""}
+                </p>
+              )}
               <RoutineActions
                 routine={{
                   id: routine.id,
                   name: routine.name,
+                  startDate: toDateInput(routine.startDate),
                   slots: routine.slots.map((slot) => ({
                     id: slot.id,
                     type: slot.type === "REST" ? "REST" : "WORKOUT",
@@ -55,6 +92,7 @@ export default async function RoutinePage() {
                   })),
                 }}
                 workouts={workouts}
+                today={today}
               />
             </div>
 
@@ -77,7 +115,7 @@ export default async function RoutinePage() {
                       {slot.type === "REST" ? "Descanso" : "Treino"}
                     </p>
                   </div>
-                  {slot.id === routine.currentSlotId ? (
+                  {index === currentIndex ? (
                     <span className="shrink-0 rounded-pill bg-ink px-sm py-xxs text-caption-strong text-canvas">
                       Atual
                     </span>

@@ -7,7 +7,13 @@ import { Modal } from "@/components/ui/modal";
 
 import { RoutineForm, type WorkoutOption } from "./routine-form";
 
-export function CreateRoutine({ workouts }: { workouts: WorkoutOption[] }) {
+export function CreateRoutine({
+  workouts,
+  today,
+}: {
+  workouts: WorkoutOption[];
+  today: string;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -16,7 +22,11 @@ export function CreateRoutine({ workouts }: { workouts: WorkoutOption[] }) {
 
       {open && (
         <Modal open onClose={() => setOpen(false)} title="Nova rotina">
-          <RoutineForm workouts={workouts} onClose={() => setOpen(false)} />
+          <RoutineForm
+            workouts={workouts}
+            today={today}
+            onClose={() => setOpen(false)}
+          />
         </Modal>
       )}
     </>
