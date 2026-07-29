@@ -25,8 +25,31 @@ model Exercise {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category         Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  workoutExercises WorkoutExercise[]
 
   @@unique([categoryId, name])
   @@index([categoryId])
+}
+
+model Workout {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  exercises WorkoutExercise[]
+}
+
+model WorkoutExercise {
+  id         String @id @default(cuid())
+  workoutId  String
+  exerciseId String
+  position   Int
+
+  workout  Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  exercise Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  @@index([workoutId])
+  @@index([exerciseId])
 }

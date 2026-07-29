@@ -7,7 +7,10 @@ export default function SettingsPage() {
     <>
       <Header />
       <Tile surface="parchment" className="pb-section">
-        <ButtonLink href="/exercises">Exercícios</ButtonLink>
+        <div className="flex flex-wrap gap-sm">
+          <ButtonLink href="/exercises">Exercícios</ButtonLink>
+          <ButtonLink href="/workouts">Treinos</ButtonLink>
+        </div>
       </Tile>
     </>
   );
