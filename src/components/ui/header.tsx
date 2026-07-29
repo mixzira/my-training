@@ -9,7 +9,7 @@ import { SettingsIcon } from "@/components/icons";
 import { BackButton } from "@/components/ui/back-button";
 import { cn } from "@/lib/cn";
 
-const ROOT_ROUTES = new Set(["/", "/exercises"]);
+const ROOT_ROUTES = new Set(["/"]);
 
 export function Header({ back }: { back?: boolean | string }) {
   const pathname = usePathname();

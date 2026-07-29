@@ -3,12 +3,9 @@
 import { GlassCard } from "@developer-hub/liquid-glass";
 import Link from "next/link";
 
-import { ExercisesIcon, HomeIcon } from "@/components/icons";
+import { HomeIcon } from "@/components/icons";
 
-const ITEMS = [
-  { href: "/", label: "Home", Icon: HomeIcon },
-  { href: "/exercises", label: "Exercícios", Icon: ExercisesIcon },
-] as const;
+const ITEMS = [{ href: "/", label: "Home", Icon: HomeIcon }] as const;
 
 export function FloatingMenu() {
   return (
