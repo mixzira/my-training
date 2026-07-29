@@ -600,10 +600,31 @@ A tabela de breakpoints acima é lida **de baixo para cima**. Escreva o estilo d
 | `xl` | 1068px | small desktop |
 | `2xl` | 1440px | content lock |
 
+## Extensão: estado de erro
+
+O documento original registra em *Known Gaps* que estados de validação e erro **não foram observados** nas páginas analisadas. Esta é a extensão do projeto para preencher essa lacuna.
+
+Vermelho **não é um segundo acento**. `primary` continua sendo a única cor de "clique aqui". Vermelho é cor de **estado**, aparece só quando algo deu errado, e nunca em elemento interativo saudável.
+
+| Token | Valor | Uso |
+|---|---|---|
+| `danger` | `#d70015` | Texto e borda de erro em superfície clara. Contraste 5,4:1 sobre branco (AA) |
+| `danger-on-dark` | `#ff453a` | Mesmo papel em tile escuro |
+
+**Anatomia de um campo com erro** (`src/components/ui/field.tsx`):
+
+1. O rótulo do campo (`caption-strong`) troca de `ink-muted-80` para `danger`.
+2. O controle troca `border-hairline` por `border-danger`, e o texto digitado vai para `danger`. Ganha `aria-invalid`.
+3. Abaixo do controle, no lugar da dica, entra a mensagem em `fine-print` + `danger`, com `role="alert"`.
+
+A dica e a mensagem de erro ocupam **o mesmo espaço** — trocam entre si, não se empilham. O campo não muda de altura ao errar, então o formulário não pula.
+
+Erro que não pertence a nenhum campo (`FormError`) vai em `caption` + `danger`, acima dos botões.
+
 ## Regras não negociáveis no código
 
 1. **Nunca hex inline.** Sempre `bg-canvas-parchment`, `text-ink`, `bg-primary` — nunca `bg-[#0066cc]`.
-2. **Um único azul.** `--color-primary` (#0066cc) em superfície clara, `--color-primary-on-dark` (#2997ff) em tile escuro. Nada mais é clicável-colorido.
+2. **Um único azul.** `--color-primary` (#0066cc) em superfície clara, `--color-primary-on-dark` (#2997ff) em tile escuro. Nada mais é clicável-colorido. `danger` é estado, não acento.
 3. **Zero sombra.** Não use `shadow-*` do Tailwind em lugar nenhum.
 4. **Zero gradiente.**
 5. **Body a 17px** (`text-body`), nunca 16px. Peso 500 não existe.

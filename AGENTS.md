@@ -36,8 +36,15 @@ Implemente exatamente o que foi pedido. Não adicione rotas, telas, campos, seed
 4. Depois de uma mutação: `revalidatePath(...)` ou `refresh()` de `next/cache`. Nunca refetch manual no cliente.
 5. Formulários usam `<form action={serverAction}>`. Estado de pending vem de `useActionState` / `useFormStatus`, não de `useState`.
 6. Validação de entrada acontece dentro da Server Action, antes de tocar o banco.
+6.1. **Todo formulário precisa mostrar o erro ao usuário.** Nenhuma falha pode terminar só no console, num `throw` silencioso ou num estado em que "nada acontece". Isso vale para validação, resposta de serviço externo, arquivo em formato errado, arquivo acima do limite e falha de rede.
+   - Erro de campo: a Server Action devolve `fieldErrors` (use `fieldError()` de `src/lib/form.ts`) e o campo entra no estado de erro do design system — rótulo, borda e mensagem em `danger`, com a mensagem abaixo do controle.
+   - Erro que não pertence a um campo: `error` no `ActionState`, renderizado por `<FormError>`.
+   - A mensagem diz **o que houve e o que fazer**, em português. "Arquivo de 130 MB excede o limite de 100 MB." — não "erro ao enviar".
+   - Falha detectada no cliente (formato, tamanho, rede) usa exatamente a mesma apresentação da falha vinda do servidor.
 7. `src/lib/prisma.ts` é o único ponto que instancia o `PrismaClient`. É `server-only`.
 8. Toda mudança de schema passa por `npx prisma migrate dev --name <nome>`. Nunca edite o SQL de uma migration já aplicada.
+9. **Arquivos vão para o R2** (S3-compatible), nunca para o disco local nem para o banco. `src/lib/storage/` é o único ponto que fala com o bucket, e é `server-only`. O banco guarda a chave do objeto, nunca a URL.
+10. **O bucket é privado.** Leitura sempre por URL assinada gerada no servidor (`createFileUrl`). Nunca exponha o bucket publicamente nem monte URL de objeto na mão.
 
 ## Regras de UI
 
@@ -52,6 +59,7 @@ O design system está em [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) e é a
 7. Corpo de texto a 17px (`text-body`). Peso 500 não existe na escala — use 400 ou 600.
 8. Faixas full-bleed (`Tile`) não têm raio. Cards utilitários usam `rounded-lg`. Ações usam `rounded-pill`.
 9. Textos da interface em português do Brasil.
+10. **Vermelho é estado, não acento.** `danger` / `danger-on-dark` só aparecem em erro. Campos usam `<Field error={...}>` e `<Input invalid>`; nunca invente uma apresentação de erro nova.
 
 ## Estilo de código
 
@@ -67,7 +75,9 @@ prisma/schema.prisma          modelos e migrations
 src/app/                      rotas (App Router)
 src/components/ui/            primitivas do design system
 src/lib/prisma.ts             cliente Prisma (server-only)
+src/lib/storage/              R2/S3: client, config e operações (server-only)
 src/lib/cn.ts                 merge de classes Tailwind
+scripts/r2-cors.mts           aplica o CORS do bucket
 src/generated/prisma/         client gerado (não versionado)
 docs/DESIGN_SYSTEM.md         design system
 ```
@@ -80,6 +90,7 @@ npm run build      build de produção
 npm run lint       eslint
 npm run db:migrate migration de desenvolvimento
 npm run db:studio  Prisma Studio
+npm run r2:cors    aplica o CORS do bucket R2
 ```
 
 ## Antes de entregar

@@ -2,8 +2,12 @@ import { notFound } from "next/navigation";
 
 import { Tile } from "@/components/ui/tile";
 import { prisma } from "@/lib/prisma";
+import { createFileUrl } from "@/lib/storage";
 
 import { AddExerciseForm } from "./add-exercise-form";
+import { ExerciseCard } from "./exercise-card";
+
+export const dynamic = "force-dynamic";
 
 export default async function CategoryExercisesPage({
   params,
@@ -19,6 +23,15 @@ export default async function CategoryExercisesPage({
 
   if (!category) notFound();
 
+  const cards = await Promise.all(
+    category.exercises.map(async (exercise) => ({
+      id: exercise.id,
+      name: exercise.name,
+      videoKey: exercise.videoKey,
+      videoUrl: await createFileUrl(exercise.videoKey),
+    })),
+  );
+
   return (
     <Tile surface="parchment" className="pb-section">
       <h1 className="text-display-md font-display lg:text-display-lg">
@@ -29,29 +42,15 @@ export default async function CategoryExercisesPage({
         <AddExerciseForm categoryId={category.id} />
       </div>
 
-      {category.exercises.length === 0 ? (
+      {cards.length === 0 ? (
         <p className="mt-xl max-w-[36ch] text-body text-ink-muted-80">
           Nenhum exercício nesta categoria ainda.
         </p>
       ) : (
         <ul className="mt-xl grid grid-cols-1 gap-sm lg:grid-cols-2 xl:grid-cols-3">
-          {category.exercises.map((exercise) => (
-            <li
-              key={exercise.id}
-              className="flex items-center gap-md rounded-lg border border-hairline bg-canvas p-lg"
-            >
-              <video
-                src={exercise.videoUrl}
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="metadata"
-                className="size-[72px] shrink-0 rounded-sm bg-canvas-parchment object-cover"
-              />
-              <p className="min-w-0 truncate text-body-strong text-ink">
-                {exercise.name}
-              </p>
+          {cards.map((exercise) => (
+            <li key={exercise.id}>
+              <ExerciseCard categoryId={category.id} exercise={exercise} />
             </li>
           ))}
         </ul>

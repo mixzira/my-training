@@ -1,9 +1,17 @@
+export type FieldErrors = Record<string, string>;
+
 export type ActionState = {
   error?: string;
+  fieldErrors?: FieldErrors;
+  warning?: string;
   ok?: boolean;
 };
 
 export const INITIAL_ACTION_STATE: ActionState = {};
+
+export function fieldError(field: string, message: string): ActionState {
+  return { fieldErrors: { [field]: message } };
+}
 
 export function parseText(
   value: FormDataEntryValue | null,
@@ -17,14 +25,13 @@ export function parseText(
   return text;
 }
 
-export function parseUrl(value: FormDataEntryValue | null): string | null {
-  const text = parseText(value, 2048);
-  if (text === null) return null;
+export function parseObjectKey(value: FormDataEntryValue | null): string | null {
+  if (typeof value !== "string") return null;
 
-  try {
-    const { protocol } = new URL(text);
-    return protocol === "https:" || protocol === "http:" ? text : null;
-  } catch {
+  const key = value.trim();
+  if (!/^(categories|exercises)\/[0-9a-f-]{36}\.[a-z0-9]{3,4}$/.test(key)) {
     return null;
   }
+
+  return key;
 }
