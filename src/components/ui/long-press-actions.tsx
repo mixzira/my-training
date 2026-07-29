@@ -89,7 +89,7 @@ export function LongPressActions({
         className={cn(
           "flex shrink-0 items-center justify-end gap-xs overflow-hidden transition-all duration-300 ease-out",
           revealed
-            ? "w-[104px] pl-xs opacity-100"
+            ? "w-26 pl-xs opacity-100"
             : "pointer-events-none w-0 opacity-0",
         )}
       >

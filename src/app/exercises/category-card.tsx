@@ -53,14 +53,14 @@ export function CategoryCard({ category }: { category: CategoryCardData }) {
       <div className="flex flex-col gap-xxs">
         <Link
           href={`/exercises/${category.id}`}
-          className="flex items-center gap-md rounded-lg border border-hairline bg-canvas p-lg"
+          className="flex items-center gap-md rounded-lg border border-hairline bg-canvas p-4"
         >
           <Image
             src={category.imageUrl}
             alt=""
             width={72}
             height={72}
-            className="size-[72px] shrink-0 rounded-sm bg-canvas-parchment object-cover"
+            className="size-22 shrink-0 rounded-sm bg-canvas-parchment object-cover aspect-square"
             unoptimized
           />
           <div className="min-w-0">
