@@ -10,6 +10,7 @@ export default function SettingsPage() {
         <div className="flex flex-wrap gap-sm">
           <ButtonLink href="/exercises">Exercícios</ButtonLink>
           <ButtonLink href="/workouts">Treinos</ButtonLink>
+          <ButtonLink href="/routine">Rotina</ButtonLink>
         </div>
       </Tile>
     </>

@@ -38,7 +38,51 @@ model Workout {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  exercises WorkoutExercise[]
+  exercises    WorkoutExercise[]
+  routineSlots RoutineSlot[]
+}
+
+model Routine {
+  id            String    @id @default(cuid())
+  name          String
+  currentSlotId String?   @unique
+  currentSince  DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  currentSlot RoutineSlot?   @relation("CurrentSlot", fields: [currentSlotId], references: [id], onDelete: SetNull)
+  slots       RoutineSlot[]  @relation("RoutineSlots")
+  logs        ExecutionLog[]
+}
+
+model RoutineSlot {
+  id        String  @id @default(cuid())
+  routineId String
+  position  Int
+  type      String
+  workoutId String?
+
+  routine          Routine        @relation("RoutineSlots", fields: [routineId], references: [id], onDelete: Cascade)
+  workout          Workout?       @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  currentOfRoutine Routine?       @relation("CurrentSlot")
+  logs             ExecutionLog[]
+
+  @@index([routineId])
+  @@index([workoutId])
+}
+
+model ExecutionLog {
+  id        String   @id @default(cuid())
+  routineId String
+  slotId    String
+  date      DateTime @default(now())
+  status    String
+
+  routine Routine     @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  slot    RoutineSlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
+
+  @@index([routineId])
+  @@index([slotId])
 }
 
 model WorkoutExercise {
