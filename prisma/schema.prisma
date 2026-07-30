@@ -27,6 +27,7 @@ model Exercise {
 
   category         Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   workoutExercises WorkoutExercise[]
+  sessionEntries   SessionEntry[]
 
   @@unique([categoryId, name])
   @@index([categoryId])
@@ -40,6 +41,7 @@ model Workout {
 
   exercises    WorkoutExercise[]
   routineSlots RoutineSlot[]
+  sessions     WorkoutSession[]
 }
 
 model Routine {
@@ -84,6 +86,36 @@ model ExecutionLog {
 
   @@index([routineId])
   @@index([slotId])
+}
+
+model WorkoutSession {
+  id          String    @id @default(cuid())
+  date        DateTime  @unique
+  workoutId   String
+  completedAt DateTime?
+  photoKey    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  workout Workout        @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  entries SessionEntry[]
+
+  @@index([workoutId])
+}
+
+model SessionEntry {
+  id         String  @id @default(cuid())
+  sessionId  String
+  position   Int
+  exerciseId String
+  done       Boolean @default(false)
+  weight     Float   @default(0)
+
+  session  WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  exercise Exercise       @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([exerciseId])
 }
 
 model WorkoutExercise {

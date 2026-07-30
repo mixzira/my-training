@@ -6,6 +6,7 @@ import { cn } from "@/lib/cn";
 export type ButtonVariant =
   | "primary"
   | "secondary"
+  | "tertiary"
   | "dark-utility"
   | "pearl"
   | "hero";
@@ -20,6 +21,8 @@ const variants: Record<ButtonVariant, string> = {
     "bg-primary text-on-primary text-body rounded-pill px-[22px] py-[11px]",
   secondary:
     "bg-transparent text-primary border-primary dark:text-primary-on-dark dark:border-primary-on-dark text-body rounded-pill px-[22px] py-[11px] border",
+  tertiary:
+    "bg-transparent text-primary dark:text-primary-on-dark text-body px-xs",
   "dark-utility":
     "bg-ink text-canvas text-button-utility rounded-sm px-[15px] py-xs",
   pearl:
