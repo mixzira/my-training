@@ -37,7 +37,7 @@ function ageFrom(birthDate: Date, now: Date): number {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <li className="flex items-center justify-between gap-md rounded-lg border border-hairline bg-canvas p-lg">
+    <li className="flex items-center justify-between gap-md rounded-pill border border-hairline bg-canvas p-lg">
       <span className="text-caption text-ink-muted-48">{label}</span>
       <span data-numeric className="text-body-strong text-ink">
         {value}
@@ -59,13 +59,9 @@ export default async function ProfilePage() {
     <>
       <Header title="Perfil" actions={false} />
       <Tile surface="parchment" className="pb-section">
-        <h1 className="text-display-md font-display lg:text-display-lg">
-          Perfil
-        </h1>
-
         {!profile ? (
           <>
-            <p className="mt-xl max-w-[36ch] text-body text-ink-muted-80">
+            <p className="max-w-[36ch] text-body text-ink-muted-80">
               Nenhum perfil ainda. Diga como você quer ser chamado para começar.
             </p>
             <div className="mt-lg">
@@ -73,17 +69,17 @@ export default async function ProfilePage() {
             </div>
           </>
         ) : (
-          <div className="mt-lg flex flex-col gap-lg">
-            <div className="flex items-center gap-md">
+          <div className="flex flex-col gap-lg">
+            <div className="flex flex-col items-center gap-sm">
               <Image
                 src={avatarUrl ?? FALLBACK_AVATAR}
                 alt=""
                 width={160}
                 height={160}
-                className="size-20 shrink-0 rounded-full bg-canvas object-cover"
+                className="size-28 shrink-0 rounded-full bg-canvas object-cover"
                 unoptimized
               />
-              <p className="min-w-0 flex-1 truncate text-lead text-ink">
+              <p className="max-w-full truncate text-lead text-ink font-bold">
                 {profile.nickname}
               </p>
             </div>
@@ -115,7 +111,7 @@ export default async function ProfilePage() {
               />
             </ul>
 
-            <div className="flex flex-wrap gap-sm">
+            <div className="flex flex-wrap justify-center gap-sm">
               <EditProfile
                 profile={{
                   nickname: profile.nickname,

@@ -30,7 +30,6 @@ function shell(body: ReactNode) {
     <>
       <Header title="Hoje" />
       <Tile surface="parchment" className="pb-section">
-        <h1 className="text-display-md font-display lg:text-display-lg">Hoje</h1>
         {body}
       </Tile>
     </>
@@ -38,7 +37,7 @@ function shell(body: ReactNode) {
 }
 
 function message(text: string) {
-  return <p className="mt-xl max-w-[36ch] text-body text-ink-muted-80">{text}</p>;
+  return <p className="max-w-[36ch] text-body text-ink-muted-80">{text}</p>;
 }
 
 export default async function HomePage() {

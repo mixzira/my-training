@@ -144,7 +144,7 @@ export function TodayWorkout({
   }
 
   return (
-    <div className="mt-lg flex flex-col gap-lg">
+    <div className="flex flex-col gap-lg">
       <div>
         <p className="text-caption text-ink-muted-48">Treino de hoje</p>
         <p className="text-lead text-ink">{workoutName}</p>
