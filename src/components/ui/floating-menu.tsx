@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { HomeIcon } from "@/components/icons";
 
-const ITEMS = [{ href: "/", label: "Home", Icon: HomeIcon }] as const;
+const ITEMS = [{ href: "/", label: "Início", Icon: HomeIcon }] as const;
 
 export function FloatingMenu() {
   return (
@@ -16,10 +16,10 @@ export function FloatingMenu() {
             <li key={href}>
               <Link
                 href={href}
-                aria-label={label}
-                className="flex min-h-touch min-w-touch items-center justify-center rounded-pill transition-transform duration-150 active:scale-95"
+                className="flex min-h-touch min-w-touch flex-col items-center justify-center gap-xxs rounded-pill px-sm transition-transform duration-150 active:scale-95"
               >
                 <Icon />
+                <span className="text-nav-link">{label}</span>
               </Link>
             </li>
           ))}
