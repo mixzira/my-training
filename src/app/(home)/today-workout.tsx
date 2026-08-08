@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import { useRef, useState, useTransition } from "react";
 
 import { CloseIcon, EyeIcon, WeightIcon } from "@/components/icons";
@@ -33,6 +34,15 @@ function isValidWeight(value: string): boolean {
   const parsed = parseFloat(value.replace(",", "."));
   return value.trim() !== "" && Number.isFinite(parsed) && parsed >= 0;
 }
+
+const ENTER = {
+  type: "spring",
+  stiffness: 380,
+  damping: 26,
+  mass: 0.9,
+} as const;
+
+const EXIT = { duration: 0.2, ease: "easeIn" } as const;
 
 const iconButton =
   "flex shrink-0 items-center justify-center rounded-full border border-hairline bg-canvas text-ink transition-transform duration-150 active:scale-95";
@@ -144,163 +154,188 @@ export function TodayWorkout({
   }
 
   return (
-    <div className="flex flex-col gap-lg">
-      <div>
-        <p className="text-caption text-ink-muted-48">Treino de hoje</p>
-        <p className="text-lead text-ink">{workoutName}</p>
-      </div>
+    <MotionConfig reducedMotion="user">
+      <div className="flex flex-col gap-lg">
+        <div>
+          <p className="text-caption text-ink-muted-48">Treino de hoje</p>
+          <p className="text-lead text-ink">{workoutName}</p>
+        </div>
 
-      {concluded ? (
-        <>
-          <div className="flex flex-col items-start gap-sm rounded-lg border border-hairline bg-canvas p-lg">
-            <p className="text-body-strong text-ink">
-              Parabéns, o de hoje está pago! 🎉
-            </p>
-            <p className="text-body text-ink-muted-80">
-              Que tal registrar o progresso com uma foto?
-            </p>
-            <Button>Adicionar foto</Button>
-          </div>
-          <Button variant="tertiary" onClick={reopen}>
-            Reabrir treino
-          </Button>
-        </>
-      ) : (
-        <>
-          <ul className="flex flex-col gap-xs">
-            {items.map((item, index) => (
-              <li key={`${item.position}-${item.exerciseId}`}>
-                <LongPressActions
-                  actionsWidth="w-17.5"
-                  actions={
-                    <button
-                      type="button"
-                      aria-label={`Carga de ${item.name} em kg`}
-                      onClick={() => openWeight(index)}
-                      className={cn(iconButton, "size-15.5")}
+        <AnimatePresence mode="wait" initial={false}>
+          {concluded ? (
+            <motion.div
+              key="concluded"
+              initial={{ opacity: 0, scale: 0.94, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={ENTER}
+              className="flex flex-col gap-lg"
+            >
+              <div className="flex flex-col items-start gap-sm rounded-lg border border-hairline bg-canvas p-lg">
+                <p className="text-body-strong text-ink">
+                  Parabéns, o de hoje está pago! 🎉
+                </p>
+                <p className="text-body text-ink-muted-80">
+                  Que tal registrar o progresso com uma foto?
+                </p>
+                <Button>Adicionar foto</Button>
+              </div>
+              <Button variant="tertiary" onClick={reopen}>
+                Reabrir treino
+              </Button>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="pending"
+              exit={{ opacity: 0, scale: 0.94 }}
+              transition={EXIT}
+              className="flex flex-col gap-lg"
+            >
+              <ul className="flex flex-col gap-xs">
+                {items.map((item, index) => (
+                  <li key={`${item.position}-${item.exerciseId}`}>
+                    <LongPressActions
+                      actionsWidth="w-17.5"
+                      actions={
+                        <button
+                          type="button"
+                          aria-label={`Carga de ${item.name} em kg`}
+                          onClick={() => openWeight(index)}
+                          className={cn(iconButton, "size-15.5")}
+                        >
+                          <WeightIcon className="size-5" />
+                        </button>
+                      }
                     >
-                      <WeightIcon className="size-5" />
-                    </button>
-                  }
-                >
-                  <div
-                    className={cn(
-                      "flex items-center gap-sm rounded-pill border border-hairline bg-canvas p-xs pl-md transition-opacity duration-150",
-                      item.done && "opacity-60",
-                    )}
-                  >
-                    <Check
-                      checked={item.done}
-                      onChange={() => toggle(index)}
-                      className="min-w-0 flex-1"
-                    >
-                      <span
+                      <div
                         className={cn(
-                          "min-w-0 flex-1 truncate text-body text-ink",
-                          item.done && "line-through",
+                          "flex items-center gap-sm rounded-pill border border-hairline bg-canvas p-xs pl-md transition-opacity duration-150",
+                          item.done && "opacity-60",
                         )}
                       >
-                        {item.name}
-                      </span>
-                    </Check>
+                        <Check
+                          checked={item.done}
+                          onChange={() => toggle(index)}
+                          className="min-w-0 flex-1"
+                        >
+                          <span
+                            className={cn(
+                              "min-w-0 flex-1 truncate text-body text-ink",
+                              item.done && "line-through",
+                            )}
+                          >
+                            {item.name}
+                          </span>
+                        </Check>
 
-                    <button
-                      type="button"
-                      aria-label={`Ver execução de ${item.name}`}
-                      onClick={() => openPreview(index)}
-                      className="group relative size-touch shrink-0 overflow-hidden rounded-full transition-transform duration-150 active:scale-95"
-                    >
-                      <video
-                        ref={(element) => {
-                          if (element) cardVideos.current.set(index, element);
-                          else cardVideos.current.delete(index);
-                        }}
-                        src={item.videoUrl}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="size-full object-cover"
-                      />
-                      <span className="absolute inset-0 flex items-center justify-center bg-surface-chip-translucent/64 text-ink opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-active:opacity-100">
-                        <EyeIcon className="size-5" />
-                      </span>
-                    </button>
-                  </div>
-                </LongPressActions>
-              </li>
-            ))}
-          </ul>
+                        <button
+                          type="button"
+                          aria-label={`Ver execução de ${item.name}`}
+                          onClick={() => openPreview(index)}
+                          className="group relative size-touch shrink-0 overflow-hidden rounded-full transition-transform duration-150 active:scale-95"
+                        >
+                          <video
+                            ref={(element) => {
+                              if (element)
+                                cardVideos.current.set(index, element);
+                              else cardVideos.current.delete(index);
+                            }}
+                            src={item.videoUrl}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="size-full object-cover"
+                          />
+                          <span className="absolute inset-0 flex items-center justify-center bg-surface-chip-translucent/64 text-ink opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-active:opacity-100">
+                            <EyeIcon className="size-5" />
+                          </span>
+                        </button>
+                      </div>
+                    </LongPressActions>
+                  </li>
+                ))}
+              </ul>
 
-          {allDone ? (
-            <div className="flex flex-col gap-xxs">
-              <HoldButton holdMs={2000} onComplete={conclude}>
-                Concluir treino
-              </HoldButton>
-            </div>
-          ) : null}
-        </>
-      )}
+              <AnimatePresence>
+                {allDone ? (
+                  <motion.div
+                    key="conclude"
+                    initial={{ opacity: 0, scale: 0.88, y: 16 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={ENTER}
+                    className="flex flex-col gap-xxs"
+                  >
+                    <HoldButton holdMs={2000} onComplete={conclude}>
+                      Concluir treino
+                    </HoldButton>
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-      {error ? (
-        <p role="alert" className="text-caption text-danger">
-          {error}
-        </p>
-      ) : null}
+        {error ? (
+          <p role="alert" className="text-caption text-danger">
+            {error}
+          </p>
+        ) : null}
 
-      {weightItem ? (
-        <Modal open onClose={closeWeight} title={weightItem.name}>
-          <Field
-            label="Carga (kg)"
-            error={weightError ?? undefined}
-            htmlFor="weight"
-          >
-            <Input
-              id="weight"
-              type="text"
-              inputMode="decimal"
-              autoFocus
-              value={weightDraft}
-              invalid={Boolean(weightError)}
-              onChange={(event) => {
-                setWeightDraft(event.target.value);
-                setWeightError(null);
-              }}
-            />
-          </Field>
-
-          <div className="flex justify-end gap-xs">
-            <Button variant="tertiary" onClick={closeWeight}>
-              Cancelar
-            </Button>
-            <Button onClick={saveWeight}>Salvar</Button>
-          </div>
-        </Modal>
-      ) : null}
-
-      {previewItem ? (
-        <Modal bare open onClose={() => setPreviewIndex(null)}>
-          <div className="flex justify-end">
-            <button
-              type="button"
-              aria-label={`Fechar execução de ${previewItem.name}`}
-              onClick={() => setPreviewIndex(null)}
-              className={cn(iconButton, "size-touch")}
+        {weightItem ? (
+          <Modal open onClose={closeWeight} title={weightItem.name}>
+            <Field
+              label="Carga (kg)"
+              error={weightError ?? undefined}
+              htmlFor="weight"
             >
-              <CloseIcon className="size-5" />
-            </button>
-          </div>
-          <video
-            src={previewItem.videoUrl}
-            autoPlay
-            loop
-            muted
-            playsInline
-            style={{ aspectRatio: previewRatio }}
-            className="w-full rounded-md object-cover"
-          />
-        </Modal>
-      ) : null}
-    </div>
+              <Input
+                id="weight"
+                type="text"
+                inputMode="decimal"
+                autoFocus
+                value={weightDraft}
+                invalid={Boolean(weightError)}
+                onChange={(event) => {
+                  setWeightDraft(event.target.value);
+                  setWeightError(null);
+                }}
+              />
+            </Field>
+
+            <div className="flex justify-end gap-xs">
+              <Button variant="tertiary" onClick={closeWeight}>
+                Cancelar
+              </Button>
+              <Button onClick={saveWeight}>Salvar</Button>
+            </div>
+          </Modal>
+        ) : null}
+
+        {previewItem ? (
+          <Modal bare open onClose={() => setPreviewIndex(null)}>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                aria-label={`Fechar execução de ${previewItem.name}`}
+                onClick={() => setPreviewIndex(null)}
+                className={cn(iconButton, "size-touch")}
+              >
+                <CloseIcon className="size-5" />
+              </button>
+            </div>
+            <video
+              src={previewItem.videoUrl}
+              autoPlay
+              loop
+              muted
+              playsInline
+              style={{ aspectRatio: previewRatio }}
+              className="w-full rounded-md object-cover"
+            />
+          </Modal>
+        ) : null}
+      </div>
+    </MotionConfig>
   );
 }
