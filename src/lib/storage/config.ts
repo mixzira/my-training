@@ -19,7 +19,9 @@ export const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
 
 export const UPLOAD_URL_TTL_SECONDS = 60 * 5;
 
-export const DOWNLOAD_URL_TTL_SECONDS = 60 * 60;
+export const DOWNLOAD_URL_WINDOW_SECONDS = 60 * 60;
+
+export const DOWNLOAD_URL_TTL_SECONDS = 60 * 60 * 2;
 
 export const EXTENSION_BY_CONTENT_TYPE: Record<string, string> = {
   "image/png": "png",

@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 
-import { Header } from "@/components/ui/header";
 import { TabNav, type Tab } from "@/components/ui/tab-nav";
 import { Tile } from "@/components/ui/tile";
 
@@ -15,7 +14,6 @@ const TABS: Tab[] = [
 export default function SettingsLayout({ children }: { children: ReactNode }) {
   return (
     <>
-      <Header title="Configurações" back="/" actions={false} />
       <Tile surface="parchment" className="pb-lg">
         <TabNav tabs={TABS} />
         <div className="mt-xl">{children}</div>

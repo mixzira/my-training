@@ -8,24 +8,35 @@ import { ViewTransition } from "react";
 import { SettingsIcon } from "@/components/icons";
 import { BackButton } from "@/components/ui/back-button";
 
-const ROOT_ROUTES = new Set(["/"]);
-
 const FALLBACK_AVATAR = "/images/avatar.webp";
 
-export function HeaderBar({
-  back,
-  title,
-  actions,
-  avatarUrl,
-}: {
-  back?: boolean | string;
+type Route = {
+  prefix: string;
   title: string;
-  actions: boolean;
-  avatarUrl: string | null;
-}) {
+  back?: boolean | string;
+  actions?: boolean;
+};
+
+const ROUTES: Route[] = [
+  { prefix: "/settings", title: "Configurações", back: "/", actions: false },
+  { prefix: "/profile", title: "Perfil", actions: false },
+  { prefix: "/today", title: "Hoje", back: false },
+  { prefix: "/", title: "Início", back: false },
+];
+
+function resolveRoute(pathname: string): Route {
+  return (
+    ROUTES.find(
+      (route) =>
+        pathname === route.prefix || pathname.startsWith(`${route.prefix}/`),
+    ) ?? ROUTES[ROUTES.length - 1]
+  );
+}
+
+export function HeaderBar({ avatarUrl }: { avatarUrl: string | null }) {
   const pathname = usePathname();
-  const showBack =
-    back === undefined ? !ROOT_ROUTES.has(pathname) : back !== false;
+  const { title, back, actions = true } = resolveRoute(pathname);
+  const showBack = back !== false;
 
   return (
     <header className="sticky top-0 z-40 bg-surface-black text-on-dark [view-transition-name:app-header]">

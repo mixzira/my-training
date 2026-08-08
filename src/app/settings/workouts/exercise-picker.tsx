@@ -32,9 +32,7 @@ function ExerciseAddCard({
       className="flex w-full items-center gap-md rounded-lg border border-hairline bg-canvas p-md text-left transition-transform duration-150 active:scale-95"
     >
       <video
-        src={active ? exercise.videoUrl : undefined}
-        autoPlay
-        loop
+        src={active ? `${exercise.videoUrl}#t=0.001` : undefined}
         muted
         playsInline
         preload="metadata"

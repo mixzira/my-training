@@ -13,6 +13,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { getStorage } from "./client";
 import {
   DOWNLOAD_URL_TTL_SECONDS,
+  DOWNLOAD_URL_WINDOW_SECONDS,
   EXTENSION_BY_CONTENT_TYPE,
   MAX_IMAGE_BYTES,
   MAX_VIDEO_BYTES,
@@ -110,6 +111,11 @@ export async function confirmUpload(key: string) {
   return { key, contentType, size };
 }
 
+function currentWindowStart(): Date {
+  const windowMs = DOWNLOAD_URL_WINDOW_SECONDS * 1000;
+  return new Date(Math.floor(Date.now() / windowMs) * windowMs);
+}
+
 export async function createFileUrl(
   key: string,
   expiresIn = DOWNLOAD_URL_TTL_SECONDS,
@@ -118,6 +124,7 @@ export async function createFileUrl(
 
   return getSignedUrl(s3, new GetObjectCommand({ Bucket: bucket, Key: key }), {
     expiresIn,
+    signingDate: currentWindowStart(),
   });
 }
 

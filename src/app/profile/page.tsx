@@ -1,6 +1,5 @@
 import Image from "next/image";
 
-import { Header } from "@/components/ui/header";
 import { Tile } from "@/components/ui/tile";
 import { prisma } from "@/lib/prisma";
 import { createFileUrl } from "@/lib/storage";
@@ -57,7 +56,6 @@ export default async function ProfilePage() {
 
   return (
     <>
-      <Header title="Perfil" actions={false} />
       <Tile surface="parchment" className="pb-section">
         {!profile ? (
           <>

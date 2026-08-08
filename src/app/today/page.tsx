@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 
 import { ButtonLink } from "@/components/ui/button";
-import { Header } from "@/components/ui/header";
 import { Tile } from "@/components/ui/tile";
 import { prisma } from "@/lib/prisma";
 import { createFileUrl } from "@/lib/storage";
@@ -22,13 +21,14 @@ function dayStart(date: Date): Date {
 }
 
 function daysSince(start: Date, now: Date): number {
-  return Math.round((dayStart(now).getTime() - dayStart(start).getTime()) / 86400000);
+  return Math.round(
+    (dayStart(now).getTime() - dayStart(start).getTime()) / 86400000,
+  );
 }
 
 function shell(body: ReactNode) {
   return (
     <>
-      <Header title="Hoje" back={false} />
       <Tile surface="parchment" className="pb-section">
         {body}
       </Tile>
@@ -55,7 +55,9 @@ export default async function HomePage() {
   if (!routine || routine.slots.length === 0) {
     return shell(
       <>
-        {message("Nenhuma rotina ativa. Crie uma rotina para ver o treino do dia.")}
+        {message(
+          "Nenhuma rotina ativa. Crie uma rotina para ver o treino do dia.",
+        )}
         <div className="mt-lg">
           <ButtonLink href="/settings/routine">Criar rotina</ButtonLink>
         </div>

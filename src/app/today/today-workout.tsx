@@ -239,11 +239,10 @@ export function TodayWorkout({
                                 cardVideos.current.set(index, element);
                               else cardVideos.current.delete(index);
                             }}
-                            src={item.videoUrl}
-                            autoPlay
-                            loop
+                            src={`${item.videoUrl}#t=0.001`}
                             muted
                             playsInline
+                            preload="metadata"
                             className="size-full object-cover"
                           />
                           <span className="absolute inset-0 flex items-center justify-center bg-surface-chip-translucent/64 text-ink opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-active:opacity-100">
