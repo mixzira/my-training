@@ -156,11 +156,6 @@ export function TodayWorkout({
   return (
     <MotionConfig reducedMotion="user">
       <div className="flex flex-col gap-lg">
-        <div>
-          <p className="text-caption text-ink-muted-48">Treino de hoje</p>
-          <p className="text-lead text-ink">{workoutName}</p>
-        </div>
-
         <AnimatePresence mode="wait" initial={false}>
           {concluded ? (
             <motion.div
@@ -190,6 +185,11 @@ export function TodayWorkout({
               transition={EXIT}
               className="flex flex-col gap-lg"
             >
+              <div>
+                <p className="text-caption text-ink-muted-48">Treino de hoje</p>
+                <p className="text-lead text-ink">{workoutName}</p>
+              </div>
+
               <ul className="flex flex-col gap-xs">
                 {items.map((item, index) => (
                   <li key={`${item.position}-${item.exerciseId}`}>
