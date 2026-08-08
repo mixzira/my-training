@@ -4,6 +4,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Header } from "@/components/ui/header";
 import { Tile } from "@/components/ui/tile";
 import { prisma } from "@/lib/prisma";
+import { createFileUrl } from "@/lib/storage";
 
 import { TodayWorkout } from "./today-workout";
 
@@ -88,7 +89,9 @@ export default async function HomePage() {
     include: {
       exercises: {
         orderBy: { position: "asc" },
-        include: { exercise: { select: { id: true, name: true } } },
+        include: {
+          exercise: { select: { id: true, name: true, videoKey: true } },
+        },
       },
     },
   });
@@ -104,20 +107,23 @@ export default async function HomePage() {
     include: {
       entries: {
         orderBy: { position: "asc" },
-        include: { exercise: { select: { name: true } } },
+        include: { exercise: { select: { name: true, videoKey: true } } },
       },
     },
   });
 
   let initialItems;
   if (session) {
-    initialItems = session.entries.map((entry) => ({
-      position: entry.position,
-      exerciseId: entry.exerciseId,
-      name: entry.exercise.name,
-      done: entry.done,
-      weight: entry.weight,
-    }));
+    initialItems = await Promise.all(
+      session.entries.map(async (entry) => ({
+        position: entry.position,
+        exerciseId: entry.exerciseId,
+        name: entry.exercise.name,
+        videoUrl: await createFileUrl(entry.exercise.videoKey),
+        done: entry.done,
+        weight: entry.weight,
+      })),
+    );
   } else {
     const exerciseIds = [
       ...new Set(workout.exercises.map((item) => item.exerciseId)),
@@ -138,13 +144,16 @@ export default async function HomePage() {
       }
     }
 
-    initialItems = workout.exercises.map((item, position) => ({
-      position,
-      exerciseId: item.exerciseId,
-      name: item.exercise.name,
-      done: false,
-      weight: lastWeight.get(item.exerciseId) ?? 0,
-    }));
+    initialItems = await Promise.all(
+      workout.exercises.map(async (item, position) => ({
+        position,
+        exerciseId: item.exerciseId,
+        name: item.exercise.name,
+        videoUrl: await createFileUrl(item.exercise.videoKey),
+        done: false,
+        weight: lastWeight.get(item.exerciseId) ?? 0,
+      })),
+    );
   }
 
   return shell(

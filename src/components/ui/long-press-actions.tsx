@@ -8,9 +8,11 @@ export const LONG_PRESS_MS = 700;
 
 export function LongPressActions({
   actions,
+  actionsWidth = "w-26",
   children,
 }: {
   actions: ReactNode;
+  actionsWidth?: string;
   children: ReactNode;
 }) {
   const [revealed, setRevealed] = useState(false);
@@ -89,7 +91,7 @@ export function LongPressActions({
         className={cn(
           "flex shrink-0 items-center justify-end gap-xs overflow-hidden transition-all duration-300 ease-out",
           revealed
-            ? "w-26 pl-xs opacity-100"
+            ? cn(actionsWidth, "pl-xs opacity-100")
             : "pointer-events-none w-0 opacity-0",
         )}
       >

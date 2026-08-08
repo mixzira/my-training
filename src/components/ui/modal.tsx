@@ -8,11 +8,13 @@ export function Modal({
   open,
   onClose,
   title,
+  bare = false,
   children,
 }: {
   open: boolean;
   onClose: () => void;
-  title: string;
+  title?: string;
+  bare?: boolean;
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -46,12 +48,16 @@ export function Modal({
         if (event.target === ref.current) onClose();
       }}
       className={cn(
-        "m-auto max-h-[85dvh] w-[calc(100%-2rem)] max-w-[520px] overflow-y-auto",
-        "rounded-lg border border-hairline bg-canvas p-0 text-ink",
+        "m-auto max-h-[85dvh] w-[calc(100%-2rem)] max-w-[520px] overflow-y-auto p-0 text-ink",
+        bare
+          ? "bg-transparent"
+          : "rounded-lg border border-hairline bg-canvas",
       )}
     >
-      <div className="flex flex-col gap-md p-lg">
-        <h2 className="text-body-strong text-ink">{title}</h2>
+      <div
+        className={cn("flex flex-col", bare ? "gap-xs p-0" : "gap-md p-lg")}
+      >
+        {title ? <h2 className="text-body-strong text-ink">{title}</h2> : null}
         {children}
       </div>
     </dialog>

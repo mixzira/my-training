@@ -1,10 +1,14 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 
+import { CloseIcon, EyeIcon, WeightIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Check } from "@/components/ui/check";
+import { Field, Input } from "@/components/ui/field";
 import { HoldButton } from "@/components/ui/hold-button";
+import { LongPressActions } from "@/components/ui/long-press-actions";
+import { Modal } from "@/components/ui/modal";
 import { cn } from "@/lib/cn";
 
 import { saveTodaySession } from "./actions";
@@ -13,6 +17,7 @@ type InitialItem = {
   position: number;
   exerciseId: string;
   name: string;
+  videoUrl: string;
   done: boolean;
   weight: number;
 };
@@ -20,9 +25,17 @@ type InitialItem = {
 type Item = Omit<InitialItem, "weight"> & { weight: string };
 
 function parseWeight(value: string): number {
-  const parsed = parseFloat(value);
+  const parsed = parseFloat(value.replace(",", "."));
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
 }
+
+function isValidWeight(value: string): boolean {
+  const parsed = parseFloat(value.replace(",", "."));
+  return value.trim() !== "" && Number.isFinite(parsed) && parsed >= 0;
+}
+
+const iconButton =
+  "flex shrink-0 items-center justify-center rounded-full border border-hairline bg-canvas text-ink transition-transform duration-150 active:scale-95";
 
 export function TodayWorkout({
   workoutName,
@@ -42,7 +55,16 @@ export function TodayWorkout({
   );
   const [concluded, setConcluded] = useState(completed);
   const [error, setError] = useState<string | null>(null);
+  const [weightIndex, setWeightIndex] = useState<number | null>(null);
+  const [weightDraft, setWeightDraft] = useState("");
+  const [weightError, setWeightError] = useState<string | null>(null);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const [previewRatio, setPreviewRatio] = useState(1);
+  const cardVideos = useRef(new Map<number, HTMLVideoElement>());
   const [, startTransition] = useTransition();
+
+  const weightItem = weightIndex === null ? null : items[weightIndex];
+  const previewItem = previewIndex === null ? null : items[previewIndex];
 
   const allDone = items.length > 0 && items.every((item) => item.done);
 
@@ -74,18 +96,41 @@ export function TodayWorkout({
     persist(next, false);
   }
 
-  function changeWeight(index: number, value: string) {
-    setItems((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, weight: value } : item)),
-    );
+  function openPreview(index: number) {
+    const card = cardVideos.current.get(index);
+    if (card?.videoWidth && card.videoHeight) {
+      setPreviewRatio(card.videoWidth / card.videoHeight);
+    }
+    setPreviewIndex(index);
   }
 
-  function commitWeight(index: number) {
+  function openWeight(index: number) {
+    setWeightDraft(items[index].weight);
+    setWeightError(null);
+    setWeightIndex(index);
+  }
+
+  function closeWeight() {
+    setWeightIndex(null);
+    setWeightError(null);
+  }
+
+  function saveWeight() {
+    if (weightIndex === null) return;
+
+    if (!isValidWeight(weightDraft)) {
+      setWeightError("Informe um peso em kg, usando apenas números.");
+      return;
+    }
+
     const next = items.map((item, i) =>
-      i === index ? { ...item, weight: String(parseWeight(item.weight)) } : item,
+      i === weightIndex
+        ? { ...item, weight: String(parseWeight(weightDraft)) }
+        : item,
     );
     setItems(next);
     persist(next, false);
+    closeWeight();
   }
 
   function conclude() {
@@ -124,42 +169,65 @@ export function TodayWorkout({
         <>
           <ul className="flex flex-col gap-xs">
             {items.map((item, index) => (
-              <li
-                key={`${item.position}-${item.exerciseId}`}
-                className={cn(
-                  "flex items-center gap-sm rounded-lg border border-hairline bg-canvas p-md transition-opacity duration-150",
-                  item.done && "opacity-60",
-                )}
-              >
-                <Check
-                  checked={item.done}
-                  onChange={() => toggle(index)}
-                  className="min-w-0 flex-1"
+              <li key={`${item.position}-${item.exerciseId}`}>
+                <LongPressActions
+                  actionsWidth="w-17.5"
+                  actions={
+                    <button
+                      type="button"
+                      aria-label={`Carga de ${item.name} em kg`}
+                      onClick={() => openWeight(index)}
+                      className={cn(iconButton, "size-15.5")}
+                    >
+                      <WeightIcon className="size-5" />
+                    </button>
+                  }
                 >
-                  <span
+                  <div
                     className={cn(
-                      "min-w-0 flex-1 truncate text-body text-ink",
-                      item.done && "line-through",
+                      "flex items-center gap-sm rounded-pill border border-hairline bg-canvas p-xs pl-md transition-opacity duration-150",
+                      item.done && "opacity-60",
                     )}
                   >
-                    {item.name}
-                  </span>
-                </Check>
+                    <Check
+                      checked={item.done}
+                      onChange={() => toggle(index)}
+                      className="min-w-0 flex-1"
+                    >
+                      <span
+                        className={cn(
+                          "min-w-0 flex-1 truncate text-body text-ink",
+                          item.done && "line-through",
+                        )}
+                      >
+                        {item.name}
+                      </span>
+                    </Check>
 
-                <div className="flex shrink-0 items-center gap-xxs">
-                  <input
-                    type="number"
-                    min={0}
-                    step="0.5"
-                    inputMode="decimal"
-                    value={item.weight}
-                    onChange={(event) => changeWeight(index, event.target.value)}
-                    onBlur={() => commitWeight(index)}
-                    aria-label={`Carga de ${item.name} em kg`}
-                    className="h-touch w-20 rounded-md border border-hairline bg-canvas px-sm text-right text-body text-ink"
-                  />
-                  <span className="text-caption text-ink-muted-48">kg</span>
-                </div>
+                    <button
+                      type="button"
+                      aria-label={`Ver execução de ${item.name}`}
+                      onClick={() => openPreview(index)}
+                      className="group relative size-touch shrink-0 overflow-hidden rounded-full transition-transform duration-150 active:scale-95"
+                    >
+                      <video
+                        ref={(element) => {
+                          if (element) cardVideos.current.set(index, element);
+                          else cardVideos.current.delete(index);
+                        }}
+                        src={item.videoUrl}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="size-full object-cover"
+                      />
+                      <span className="absolute inset-0 flex items-center justify-center bg-surface-chip-translucent/64 text-ink opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-active:opacity-100">
+                        <EyeIcon className="size-5" />
+                      </span>
+                    </button>
+                  </div>
+                </LongPressActions>
               </li>
             ))}
           </ul>
@@ -178,6 +246,60 @@ export function TodayWorkout({
         <p role="alert" className="text-caption text-danger">
           {error}
         </p>
+      ) : null}
+
+      {weightItem ? (
+        <Modal open onClose={closeWeight} title={weightItem.name}>
+          <Field
+            label="Carga (kg)"
+            error={weightError ?? undefined}
+            htmlFor="weight"
+          >
+            <Input
+              id="weight"
+              type="text"
+              inputMode="decimal"
+              autoFocus
+              value={weightDraft}
+              invalid={Boolean(weightError)}
+              onChange={(event) => {
+                setWeightDraft(event.target.value);
+                setWeightError(null);
+              }}
+            />
+          </Field>
+
+          <div className="flex justify-end gap-xs">
+            <Button variant="tertiary" onClick={closeWeight}>
+              Cancelar
+            </Button>
+            <Button onClick={saveWeight}>Salvar</Button>
+          </div>
+        </Modal>
+      ) : null}
+
+      {previewItem ? (
+        <Modal bare open onClose={() => setPreviewIndex(null)}>
+          <div className="flex justify-end">
+            <button
+              type="button"
+              aria-label={`Fechar execução de ${previewItem.name}`}
+              onClick={() => setPreviewIndex(null)}
+              className={cn(iconButton, "size-touch")}
+            >
+              <CloseIcon className="size-5" />
+            </button>
+          </div>
+          <video
+            src={previewItem.videoUrl}
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{ aspectRatio: previewRatio }}
+            className="w-full rounded-md object-cover"
+          />
+        </Modal>
       ) : null}
     </div>
   );
