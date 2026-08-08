@@ -6,8 +6,6 @@ import { RoutineActions } from "./routine-actions";
 
 export const dynamic = "force-dynamic";
 
-const dateFormat = new Intl.DateTimeFormat("pt-BR");
-
 function toDateInput(date: Date): string {
   const pad = (value: number) => String(value).padStart(2, "0");
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
@@ -47,7 +45,6 @@ export default async function RoutinePage() {
   const elapsed = routine ? daysSince(routine.startDate, now) : 0;
   const started = Boolean(routine && routine.slots.length > 0 && elapsed >= 0);
   const currentIndex = routine && started ? elapsed % routine.slots.length : -1;
-  const daysUntil = elapsed < 0 ? -elapsed : 0;
 
   return (
     <>
@@ -62,22 +59,6 @@ export default async function RoutinePage() {
         </>
       ) : (
         <div className="flex flex-col gap-lg">
-          <div className="flex flex-col gap-sm">
-            <p className="text-body-strong text-ink">{routine.name}</p>
-            {started ? (
-              <p className="text-caption text-ink-muted-48">
-                Início: {dateFormat.format(routine.startDate)}
-              </p>
-            ) : (
-              <p className="text-caption text-ink-muted-80">
-                Começa em {dateFormat.format(routine.startDate)}
-                {daysUntil > 0
-                  ? ` · em ${daysUntil} dia${daysUntil > 1 ? "s" : ""}`
-                  : ""}
-              </p>
-            )}
-          </div>
-
           <ol className="flex flex-col gap-xs">
             {routine.slots.map((slot, index) => (
               <li

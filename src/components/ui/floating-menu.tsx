@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { ExercisesIcon, HomeIcon } from "@/components/icons";
+import { cn } from "@/lib/cn";
 
 const ITEMS = [
   { href: "/", label: "Início", Icon: HomeIcon },
@@ -40,7 +41,10 @@ export function FloatingMenu() {
                   whileHover={{ scale: 1.08, y: -6 }}
                   whileTap={{ scale: 0.95 }}
                   transition={HOVER}
-                  className="relative flex min-h-touch min-w-touch flex-col items-center justify-center gap-xxs rounded-pill py-sm px-lg"
+                  className={cn(
+                    "relative flex min-h-touch min-w-touch flex-col items-center justify-center gap-xxs rounded-pill px-lg py-sm",
+                    pathname === href && "text-primary-on-dark",
+                  )}
                 >
                   {pathname === href ? (
                     <motion.span

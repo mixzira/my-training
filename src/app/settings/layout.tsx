@@ -17,7 +17,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
     <>
       <Header title="Configurações" back="/" actions={false} />
       <Tile surface="parchment" className="pb-lg">
-        <TabNav tabs={TABS} layoutId="settings-tab" />
+        <TabNav tabs={TABS} />
         <div className="mt-xl">{children}</div>
       </Tile>
     </>
