@@ -1,5 +1,6 @@
 export const ALLOWED_ORIGINS = [
   "http://localhost:3000",
+  "http://localhost:3004",
   "https://mytraining.mixzira.dev",
 ] as const;
 
@@ -29,7 +30,9 @@ export const EXTENSION_BY_CONTENT_TYPE: Record<string, string> = {
   "video/webm": "webm",
 };
 
-export type UploadFolder = "categories" | "exercises";
+export const UPLOAD_FOLDERS = ["categories", "exercises", "profile"] as const;
+
+export type UploadFolder = (typeof UPLOAD_FOLDERS)[number];
 
 export type ImageContentType = (typeof IMAGE_CONTENT_TYPES)[number];
 export type VideoContentType = (typeof VIDEO_CONTENT_TYPES)[number];

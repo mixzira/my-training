@@ -2,6 +2,8 @@ import { ButtonLink } from "@/components/ui/button";
 import { Header } from "@/components/ui/header";
 import { Tile } from "@/components/ui/tile";
 
+export const dynamic = "force-dynamic";
+
 export default function SettingsPage() {
   return (
     <>

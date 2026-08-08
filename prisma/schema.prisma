@@ -7,6 +7,17 @@ datasource db {
   provider = "sqlite"
 }
 
+model Profile {
+  id        String    @id @default(cuid())
+  nickname  String
+  avatarKey String?
+  heightCm  Int?
+  weightKg  Float?
+  birthDate DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
 model Category {
   id        String   @id @default(cuid())
   name      String   @unique

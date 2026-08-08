@@ -1,3 +1,5 @@
+import { UPLOAD_FOLDERS } from "@/lib/storage/config";
+
 export type FieldErrors = Record<string, string>;
 
 export type ActionState = {
@@ -25,13 +27,24 @@ export function parseText(
   return text;
 }
 
+const OBJECT_KEY_PATTERN = new RegExp(
+  `^(${UPLOAD_FOLDERS.join("|")})/[0-9a-f-]{36}\\.[a-z0-9]{3,4}$`,
+);
+
 export function parseObjectKey(value: FormDataEntryValue | null): string | null {
   if (typeof value !== "string") return null;
 
   const key = value.trim();
-  if (!/^(categories|exercises)\/[0-9a-f-]{36}\.[a-z0-9]{3,4}$/.test(key)) {
-    return null;
-  }
+  if (!OBJECT_KEY_PATTERN.test(key)) return null;
 
   return key;
+}
+
+export function parseOptionalObjectKey(
+  value: FormDataEntryValue | null,
+): string | null | undefined {
+  if (typeof value !== "string") return undefined;
+  if (value.trim().length === 0) return null;
+
+  return parseObjectKey(value) ?? undefined;
 }
