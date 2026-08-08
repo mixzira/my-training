@@ -333,6 +333,7 @@ export function TodayWorkout({
               style={{ aspectRatio: previewRatio }}
               className="w-full rounded-md object-cover"
             />
+            <span aria-hidden className="h-touch shrink-0" />
           </Modal>
         ) : null}
       </div>
