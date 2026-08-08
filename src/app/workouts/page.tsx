@@ -57,7 +57,7 @@ export default async function WorkoutsPage() {
 
   return (
     <>
-      <Header />
+      <Header title="Treinos" />
       <Tile surface="parchment" className="pb-section">
         <h1 className="text-display-md font-display lg:text-display-lg">
           Treinos

@@ -35,7 +35,7 @@ export default async function CategoryExercisesPage({
 
   return (
     <>
-      <Header />
+      <Header title={category.name} />
       <Tile surface="parchment" className="pb-section">
         <h1 className="text-display-md font-display lg:text-display-lg">
           Exercícios de {category.name}

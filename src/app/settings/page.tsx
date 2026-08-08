@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default function SettingsPage() {
   return (
     <>
-      <Header />
+      <Header title="Configurações" />
       <Tile surface="parchment" className="pb-section">
         <div className="flex flex-wrap gap-sm">
           <ButtonLink href="/exercises">Exercícios</ButtonLink>

@@ -28,7 +28,7 @@ function daysSince(start: Date, now: Date): number {
 function shell(body: ReactNode) {
   return (
     <>
-      <Header />
+      <Header title="Hoje" />
       <Tile surface="parchment" className="pb-section">
         <h1 className="text-display-md font-display lg:text-display-lg">Hoje</h1>
         {body}

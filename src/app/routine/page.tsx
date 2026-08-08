@@ -49,7 +49,7 @@ export default async function RoutinePage() {
 
   return (
     <>
-      <Header />
+      <Header title="Rotina" />
       <Tile surface="parchment" className="pb-section">
         <h1 className="text-display-md font-display lg:text-display-lg">
           Rotina
