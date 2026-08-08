@@ -97,7 +97,7 @@ export async function saveTodaySession(input: {
     });
   }
 
-  revalidatePath("/");
+  revalidatePath("/today");
 
   return { ok: true };
 }

@@ -19,7 +19,7 @@ export function Tile({
 }: {
   surface?: TileSurface;
   className?: string;
-  children: ReactNode;
+  children?: ReactNode;
 }) {
   return (
     <section className={cn("w-full", surfaces[surface], className)}>
