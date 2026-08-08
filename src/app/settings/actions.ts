@@ -55,7 +55,7 @@ export async function createCategory(
 
   await prisma.category.create({ data: { name, imageKey } });
 
-  revalidatePath("/exercises");
+  revalidatePath("/settings");
 
   return { ok: true };
 }
@@ -97,8 +97,8 @@ export async function updateCategory(
     ? await discardKeys([current.imageKey])
     : undefined;
 
-  revalidatePath("/exercises");
-  revalidatePath(`/exercises/${id}`);
+  revalidatePath("/settings");
+  revalidatePath(`/settings/${id}`);
 
   return { ok: true, warning };
 }
@@ -125,7 +125,7 @@ export async function deleteCategory(
 
   const warning = await discardKeys(keys);
 
-  revalidatePath("/exercises");
+  revalidatePath("/settings");
 
   return { ok: true, warning };
 }

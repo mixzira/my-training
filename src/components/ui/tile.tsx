@@ -23,7 +23,7 @@ export function Tile({
 }) {
   return (
     <section className={cn("w-full", surfaces[surface], className)}>
-      <div className="mx-auto w-full max-w-360 px-lg py-xxl lg:px-xl lg:py-section">
+      <div className="mx-auto w-full max-w-360 px-lg pb-xxl lg:px-xl lg:pt-xl lg:pb-section">
         {children}
       </div>
     </section>

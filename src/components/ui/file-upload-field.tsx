@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 
-import { requestUpload } from "@/app/exercises/upload-actions";
+import { requestUpload } from "@/app/settings/upload-actions";
 import { Field } from "@/components/ui/field";
 import { cn } from "@/lib/cn";
 import type { UploadFolder } from "@/lib/storage/config";

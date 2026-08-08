@@ -31,11 +31,7 @@ export function CategoryForm({
   }
 
   return (
-    <form
-      action={formAction}
-      noValidate
-      className="flex flex-col gap-md"
-    >
+    <form action={formAction} noValidate className="flex flex-col gap-md">
       {category ? <input type="hidden" name="id" value={category.id} /> : null}
 
       <Field label="Nome" error={state.fieldErrors?.name}>

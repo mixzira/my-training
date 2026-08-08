@@ -57,7 +57,7 @@ export default async function HomePage() {
       <>
         {message("Nenhuma rotina ativa. Crie uma rotina para ver o treino do dia.")}
         <div className="mt-lg">
-          <ButtonLink href="/routine">Criar rotina</ButtonLink>
+          <ButtonLink href="/settings/routine">Criar rotina</ButtonLink>
         </div>
       </>,
     );

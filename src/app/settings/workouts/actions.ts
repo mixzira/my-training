@@ -57,7 +57,7 @@ export async function createWorkout(
     data: { name, exercises: { create: entriesFrom(exerciseIds) } },
   });
 
-  revalidatePath("/workouts");
+  revalidatePath("/settings/workouts");
 
   return { ok: true };
 }
@@ -97,7 +97,7 @@ export async function updateWorkout(
     }),
   ]);
 
-  revalidatePath("/workouts");
+  revalidatePath("/settings/workouts");
 
   return { ok: true };
 }
@@ -114,7 +114,7 @@ export async function deleteWorkout(
 
   await prisma.workout.delete({ where: { id } });
 
-  revalidatePath("/workouts");
+  revalidatePath("/settings/workouts");
 
   return { ok: true };
 }

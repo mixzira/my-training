@@ -7,7 +7,11 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Modal } from "@/components/ui/modal";
 
 import { deleteRoutine } from "./actions";
-import { RoutineForm, type RoutineDraft, type WorkoutOption } from "./routine-form";
+import {
+  RoutineForm,
+  type RoutineDraft,
+  type WorkoutOption,
+} from "./routine-form";
 
 export function RoutineActions({
   routine,

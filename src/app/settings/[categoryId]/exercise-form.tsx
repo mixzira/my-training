@@ -33,11 +33,7 @@ export function ExerciseForm({
   }
 
   return (
-    <form
-      action={formAction}
-      noValidate
-      className="flex flex-col gap-md"
-    >
+    <form action={formAction} noValidate className="flex flex-col gap-md">
       {exercise ? (
         <input type="hidden" name="id" value={exercise.id} />
       ) : (

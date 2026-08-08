@@ -16,7 +16,10 @@ export function AddExerciseForm({ categoryId }: { categoryId: string }) {
 
       {open && (
         <Modal open onClose={() => setOpen(false)} title="Novo exercício">
-          <ExerciseForm categoryId={categoryId} onClose={() => setOpen(false)} />
+          <ExerciseForm
+            categoryId={categoryId}
+            onClose={() => setOpen(false)}
+          />
         </Modal>
       )}
     </>

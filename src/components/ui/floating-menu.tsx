@@ -15,10 +15,14 @@ const HOVER = { type: "spring", stiffness: 320, damping: 22, mass: 0.7 } as cons
 
 const SLIDE = { type: "spring", stiffness: 420, damping: 34, mass: 0.8 } as const;
 
+const HIDDEN_ROUTES = ["/settings"];
+
 const MotionLink = motion.create(Link);
 
 export function FloatingMenu() {
   const pathname = usePathname();
+
+  if (HIDDEN_ROUTES.some((route) => pathname.startsWith(route))) return null;
 
   return (
     <MotionConfig reducedMotion="user">

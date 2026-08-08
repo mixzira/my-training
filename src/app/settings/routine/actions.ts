@@ -126,7 +126,7 @@ export async function createRoutine(
     });
   }
 
-  revalidatePath("/routine");
+  revalidatePath("/settings/routine");
 
   return { ok: true };
 }
@@ -230,7 +230,7 @@ export async function updateRoutine(
     });
   });
 
-  revalidatePath("/routine");
+  revalidatePath("/settings/routine");
 
   return { ok: true };
 }
@@ -248,7 +248,7 @@ export async function deleteRoutine(
   await prisma.routine.update({ where: { id }, data: { currentSlotId: null } });
   await prisma.routine.delete({ where: { id } });
 
-  revalidatePath("/routine");
+  revalidatePath("/settings/routine");
 
   return { ok: true };
 }

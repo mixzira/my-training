@@ -68,8 +68,8 @@ export async function createExercise(
 
   await prisma.exercise.create({ data: { name, videoKey, categoryId } });
 
-  revalidatePath(`/exercises/${categoryId}`);
-  revalidatePath("/exercises");
+  revalidatePath(`/settings/${categoryId}`);
+  revalidatePath("/settings");
 
   return { ok: true };
 }
@@ -116,7 +116,7 @@ export async function updateExercise(
     ? await discardKeys([current.videoKey])
     : undefined;
 
-  revalidatePath(`/exercises/${current.categoryId}`);
+  revalidatePath(`/settings/${current.categoryId}`);
 
   return { ok: true, warning };
 }
@@ -135,8 +135,8 @@ export async function deleteExercise(
 
   const warning = await discardKeys([exercise.videoKey]);
 
-  revalidatePath(`/exercises/${exercise.categoryId}`);
-  revalidatePath("/exercises");
+  revalidatePath(`/settings/${exercise.categoryId}`);
+  revalidatePath("/settings");
 
   return { ok: true, warning };
 }

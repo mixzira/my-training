@@ -29,7 +29,7 @@ export function HeaderBar({
 
   return (
     <header className="sticky top-0 z-40 bg-surface-black text-on-dark [view-transition-name:app-header]">
-      <div className="mx-auto flex min-h-nav w-full max-w-360 items-center justify-between gap-sm p-4">
+      <div className="mx-auto flex min-h-nav w-full max-w-360 items-center justify-between gap-sm p-lg">
         <div className="flex min-w-0 flex-1 items-center gap-xs">
           {showBack ? (
             <ViewTransition

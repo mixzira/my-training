@@ -35,7 +35,9 @@ export function WorkoutForm({
     INITIAL_ACTION_STATE,
   );
   const [settledState, setSettledState] = useState(state);
-  const [selected, setSelected] = useState<string[]>(workout?.exerciseIds ?? []);
+  const [selected, setSelected] = useState<string[]>(
+    workout?.exerciseIds ?? [],
+  );
 
   if (state !== settledState) {
     setSettledState(state);
@@ -73,11 +75,7 @@ export function WorkoutForm({
   const exercisesError = state.fieldErrors?.exercises;
 
   return (
-    <form
-      action={formAction}
-      noValidate
-      className="flex flex-col gap-md"
-    >
+    <form action={formAction} noValidate className="flex flex-col gap-md">
       {workout ? <input type="hidden" name="id" value={workout.id} /> : null}
       {selected.map((id, index) => (
         <input key={index} type="hidden" name="exerciseIds" value={id} />

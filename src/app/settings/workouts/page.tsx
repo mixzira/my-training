@@ -1,5 +1,4 @@
-import { Header } from "@/components/ui/header";
-import { Tile } from "@/components/ui/tile";
+import { FloatingActions } from "@/components/ui/floating-actions";
 import { prisma } from "@/lib/prisma";
 import { createFileUrl } from "@/lib/storage";
 
@@ -57,30 +56,23 @@ export default async function WorkoutsPage() {
 
   return (
     <>
-      <Header title="Treinos" />
-      <Tile surface="parchment" className="pb-section">
-        <h1 className="text-display-md font-display lg:text-display-lg">
-          Treinos
-        </h1>
+      <FloatingActions>
+        <AddWorkoutForm catalog={catalog} />
+      </FloatingActions>
 
-        <div className="mt-lg">
-          <AddWorkoutForm catalog={catalog} />
-        </div>
-
-        {cards.length === 0 ? (
-          <p className="mt-xl max-w-[36ch] text-body text-ink-muted-80">
-            Nenhum treino ainda. Crie o primeiro escolhendo exercícios.
-          </p>
-        ) : (
-          <ul className="mt-xl grid grid-cols-1 gap-sm lg:grid-cols-2 xl:grid-cols-3">
-            {cards.map((workout) => (
-              <li key={workout.id}>
-                <WorkoutCard workout={workout} catalog={catalog} />
-              </li>
-            ))}
-          </ul>
-        )}
-      </Tile>
+      {cards.length === 0 ? (
+        <p className="mt-xl max-w-[36ch] text-body text-ink-muted-80">
+          Nenhum treino ainda. Crie o primeiro escolhendo exercícios.
+        </p>
+      ) : (
+        <ul className="mt-xl grid grid-cols-1 gap-sm lg:grid-cols-2 xl:grid-cols-3">
+          {cards.map((workout) => (
+            <li key={workout.id}>
+              <WorkoutCard workout={workout} catalog={catalog} />
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   );
 }

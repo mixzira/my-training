@@ -44,7 +44,7 @@ export function CategoryCard({ category }: { category: CategoryCardData }) {
         }
       >
         <Link
-          href={`/exercises/${category.id}`}
+          href={`/settings/${category.id}`}
           className="flex items-center gap-md rounded-lg border border-hairline bg-canvas p-4"
         >
           <Image
@@ -56,7 +56,9 @@ export function CategoryCard({ category }: { category: CategoryCardData }) {
             unoptimized
           />
           <div className="min-w-0">
-            <p className="truncate text-body-strong text-ink">{category.name}</p>
+            <p className="truncate text-body-strong text-ink">
+              {category.name}
+            </p>
             <p className="mt-xxs text-caption text-ink-muted-48">
               {category.summary}
             </p>
