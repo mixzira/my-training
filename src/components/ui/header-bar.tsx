@@ -15,10 +15,12 @@ const FALLBACK_AVATAR = "/images/avatar.webp";
 export function HeaderBar({
   back,
   title,
+  actions,
   avatarUrl,
 }: {
   back?: boolean | string;
   title: string;
+  actions: boolean;
   avatarUrl: string | null;
 }) {
   const pathname = usePathname();
@@ -43,29 +45,31 @@ export function HeaderBar({
           <p className="min-w-0 truncate text-3xl font-bold">{title}</p>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
-          <Link
-            href="/settings"
-            aria-label="Configurações"
-            className="flex size-touch items-center justify-center rounded-full text-on-dark/30 transition-transform duration-150 active:scale-95"
-          >
-            <SettingsIcon className="size-8" />
-          </Link>
-          <Link
-            href="/profile"
-            aria-label="Perfil"
-            className="flex min-h-touch min-w-touch items-center justify-center rounded-full border border-on-dark/20 bg-on-dark/10 p-xs transition-transform duration-150 active:scale-95"
-          >
-            <Image
-              src={avatarUrl ?? FALLBACK_AVATAR}
-              alt=""
-              width={48}
-              height={48}
-              className="size-10 shrink-0 rounded-full object-cover"
-              unoptimized
-            />
-          </Link>
-        </div>
+        {actions ? (
+          <div className="flex shrink-0 items-center gap-2">
+            <Link
+              href="/settings"
+              aria-label="Configurações"
+              className="flex size-touch items-center justify-center rounded-full text-on-dark/30 transition-transform duration-150 active:scale-95"
+            >
+              <SettingsIcon className="size-8" />
+            </Link>
+            <Link
+              href="/profile"
+              aria-label="Perfil"
+              className="flex min-h-touch min-w-touch items-center justify-center rounded-full border border-on-dark/20 bg-on-dark/10 p-xs transition-transform duration-150 active:scale-95"
+            >
+              <Image
+                src={avatarUrl ?? FALLBACK_AVATAR}
+                alt=""
+                width={48}
+                height={48}
+                className="size-10 shrink-0 rounded-full object-cover"
+                unoptimized
+              />
+            </Link>
+          </div>
+        ) : null}
       </div>
     </header>
   );

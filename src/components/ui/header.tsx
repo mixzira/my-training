@@ -5,17 +5,26 @@ import { createFileUrl } from "@/lib/storage";
 export async function Header({
   back,
   title,
+  actions = true,
 }: {
   back?: boolean | string;
   title: string;
+  actions?: boolean;
 }) {
-  const profile = await prisma.profile.findFirst({
-    select: { avatarKey: true },
-  });
+  const profile = actions
+    ? await prisma.profile.findFirst({ select: { avatarKey: true } })
+    : null;
 
   const avatarUrl = profile?.avatarKey
     ? await createFileUrl(profile.avatarKey)
     : null;
 
-  return <HeaderBar back={back} title={title} avatarUrl={avatarUrl} />;
+  return (
+    <HeaderBar
+      back={back}
+      title={title}
+      actions={actions}
+      avatarUrl={avatarUrl}
+    />
+  );
 }
