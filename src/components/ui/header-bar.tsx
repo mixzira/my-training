@@ -18,6 +18,7 @@ type Route = {
 };
 
 const ROUTES: Route[] = [
+  { prefix: "/offline", title: "Sem conexão", back: false, actions: false },
   { prefix: "/settings", title: "Configurações", back: "/", actions: false },
   { prefix: "/profile", title: "Perfil", actions: false },
   { prefix: "/today", title: "Hoje", back: false },
@@ -39,7 +40,7 @@ export function HeaderBar({ avatarUrl }: { avatarUrl: string | null }) {
   const showBack = back !== false;
 
   return (
-    <header className="sticky top-0 z-40 bg-surface-black text-on-dark [view-transition-name:app-header]">
+    <header className="sticky top-0 z-40 bg-surface-black pt-[env(safe-area-inset-top)] text-on-dark [view-transition-name:app-header]">
       <div className="mx-auto flex min-h-nav w-full max-w-360 items-center justify-between gap-sm p-lg">
         <div className="flex min-w-0 flex-1 items-center gap-xs">
           {showBack ? (

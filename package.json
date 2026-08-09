@@ -7,13 +7,15 @@
   },
   "scripts": {
     "dev": "next dev -p 3004",
+    "dev:https": "next dev --experimental-https -p 3004",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "r2:cors": "node --env-file=.env scripts/r2-cors.mts"
+    "r2:cors": "node --env-file=.env scripts/r2-cors.mts",
+    "icons": "node scripts/icons.mts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1097.0",
@@ -27,14 +29,17 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "server-only": "^0.0.1",
+    "serwist": "^9.5.12",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@serwist/turbopack": "^9.5.12",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
+    "esbuild": "^0.28.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.12",
     "prisma": "^7.9.1",

@@ -1,3 +1,4 @@
+import { SerwistProvider } from "@serwist/turbopack/react";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 
@@ -16,6 +17,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "my·training",
   description: "Criar, gerenciar e mapear meus treinos.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "my·training",
+  },
 };
 
 export const viewport: Viewport = {
@@ -36,13 +42,15 @@ export default function RootLayout({
       className={`${inter.variable} h-full`}
     >
       <body className="flex min-h-full flex-col">
-        <main className="flex-1">
-          <NavHistoryProvider>
-            <Header />
-            {children}
-          </NavHistoryProvider>
-        </main>
-        <FloatingMenu />
+        <SerwistProvider swUrl="/serwist/sw.js">
+          <main className="flex-1">
+            <NavHistoryProvider>
+              <Header />
+              {children}
+            </NavHistoryProvider>
+          </main>
+          <FloatingMenu />
+        </SerwistProvider>
       </body>
     </html>
   );
