@@ -29,7 +29,7 @@ export function FloatingMenu() {
     <MotionConfig reducedMotion="user">
       <div
         className={cn(
-          "pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center pb-[calc(env(safe-area-inset-bottom)+--spacing(4))]",
+          "pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center pb-lg",
           hidden && "invisible",
         )}
       >

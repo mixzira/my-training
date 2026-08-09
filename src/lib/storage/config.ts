@@ -1,6 +1,7 @@
 export const ALLOWED_ORIGINS = [
   "http://localhost:3000",
   "http://localhost:3004",
+  "http://192.168.0.5:3004",
   "https://mytraining.mixzira.dev",
 ] as const;
 
@@ -15,13 +16,21 @@ export const VIDEO_CONTENT_TYPES = ["video/mp4", "video/webm"] as const;
 
 export const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 
+export const MAX_IMAGE_EDGE_PX = 512;
+
+export const RESIZED_IMAGE_CONTENT_TYPE = "image/webp";
+
+export const RESIZED_IMAGE_QUALITY = 0.85;
+
 export const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
 
 export const UPLOAD_URL_TTL_SECONDS = 60 * 5;
 
-export const DOWNLOAD_URL_WINDOW_SECONDS = 60 * 60;
+export const DOWNLOAD_URL_WINDOW_SECONDS = 60 * 60 * 24 * 6;
 
-export const DOWNLOAD_URL_TTL_SECONDS = 60 * 60 * 2;
+export const DOWNLOAD_URL_TTL_SECONDS = 60 * 60 * 24 * 7;
+
+export const DOWNLOAD_CACHE_CONTROL = "public, max-age=31536000, immutable";
 
 export const EXTENSION_BY_CONTENT_TYPE: Record<string, string> = {
   "image/png": "png",

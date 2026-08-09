@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/ui/field";
@@ -28,12 +28,9 @@ export function ConfirmDialog({
     action,
     INITIAL_ACTION_STATE,
   );
-  const [settledState, setSettledState] = useState(state);
-
-  if (state !== settledState) {
-    setSettledState(state);
+  useEffect(() => {
     if (state.ok) onClose();
-  }
+  }, [state, onClose]);
 
   return (
     <Modal open={open} onClose={onClose} title={title}>

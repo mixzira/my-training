@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 
 import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
@@ -34,15 +34,13 @@ export function WorkoutForm({
     workout ? updateWorkout : createWorkout,
     INITIAL_ACTION_STATE,
   );
-  const [settledState, setSettledState] = useState(state);
   const [selected, setSelected] = useState<string[]>(
     workout?.exerciseIds ?? [],
   );
 
-  if (state !== settledState) {
-    setSettledState(state);
+  useEffect(() => {
     if (state.ok) onClose();
-  }
+  }, [state, onClose]);
 
   const nameById = useMemo(() => {
     const map = new Map<string, string>();

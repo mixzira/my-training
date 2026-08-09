@@ -10,8 +10,11 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
+import { remember } from "../cache";
+
 import { getStorage } from "./client";
 import {
+  DOWNLOAD_CACHE_CONTROL,
   DOWNLOAD_URL_TTL_SECONDS,
   DOWNLOAD_URL_WINDOW_SECONDS,
   EXTENSION_BY_CONTENT_TYPE,
@@ -116,16 +119,33 @@ function currentWindowStart(): Date {
   return new Date(Math.floor(Date.now() / windowMs) * windowMs);
 }
 
+function signFileUrl(key: string, expiresIn: number, signingDate: Date) {
+  const { s3, bucket } = getStorage();
+
+  return getSignedUrl(
+    s3,
+    new GetObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      ResponseCacheControl: DOWNLOAD_CACHE_CONTROL,
+    }),
+    { expiresIn, signingDate },
+  );
+}
+
 export async function createFileUrl(
   key: string,
   expiresIn = DOWNLOAD_URL_TTL_SECONDS,
 ) {
-  const { s3, bucket } = getStorage();
+  const windowStart = currentWindowStart();
+  const windowEnd =
+    windowStart.getTime() + DOWNLOAD_URL_WINDOW_SECONDS * 1000;
 
-  return getSignedUrl(s3, new GetObjectCommand({ Bucket: bucket, Key: key }), {
-    expiresIn,
-    signingDate: currentWindowStart(),
-  });
+  return remember(
+    `url:${key}:${expiresIn}:${windowStart.getTime()}`,
+    (windowEnd - Date.now()) / 1000,
+    () => signFileUrl(key, expiresIn, windowStart),
+  );
 }
 
 export async function deleteFile(key: string) {

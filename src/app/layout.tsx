@@ -2,6 +2,7 @@ import { SerwistProvider } from "@serwist/turbopack/react";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 
+import { ServiceWorkerCleanup } from "@/components/sw-cleanup";
 import { FloatingMenu } from "@/components/ui/floating-menu";
 import { Header } from "@/components/ui/header";
 import { NavHistoryProvider } from "@/components/ui/nav-history";
@@ -32,6 +33,8 @@ export const viewport: Viewport = {
 
 export const DEFAULT_THEME = "dark";
 
+const DEV = process.env.NODE_ENV === "development";
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -41,15 +44,16 @@ export default function RootLayout({
       data-theme={DEFAULT_THEME}
       className={`${inter.variable} h-full`}
     >
-      <body className="flex min-h-full flex-col">
-        <SerwistProvider swUrl="/serwist/sw.js">
-          <main className="flex-1">
+      <body className="flex min-h-dvh flex-col">
+        <SerwistProvider swUrl="/serwist/sw.js" disable={DEV}>
+          <main className="flex flex-1 flex-col">
             <NavHistoryProvider>
               <Header />
               {children}
             </NavHistoryProvider>
           </main>
           <FloatingMenu />
+          {DEV ? <ServiceWorkerCleanup /> : null}
         </SerwistProvider>
       </body>
     </html>

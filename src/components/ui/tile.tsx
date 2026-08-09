@@ -22,8 +22,8 @@ export function Tile({
   children?: ReactNode;
 }) {
   return (
-    <section className={cn("w-full", surfaces[surface], className)}>
-      <div className="mx-auto w-full max-w-360 px-lg pb-xxl lg:px-xl lg:pt-xl lg:pb-section">
+    <section className={cn("flex w-full flex-1 flex-col", surfaces[surface], className)}>
+      <div className="mx-auto flex w-full max-w-360 flex-1 flex-col px-lg pb-xxl lg:px-xl lg:pt-xl lg:pb-section">
         {children}
       </div>
     </section>

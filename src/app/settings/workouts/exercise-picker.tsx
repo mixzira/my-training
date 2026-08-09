@@ -33,6 +33,7 @@ function ExerciseAddCard({
     >
       <video
         src={active ? `${exercise.videoUrl}#t=0.001` : undefined}
+        crossOrigin="anonymous"
         muted
         playsInline
         preload="metadata"

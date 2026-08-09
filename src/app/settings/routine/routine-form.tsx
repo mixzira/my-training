@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 
 import {
   ChevronDownIcon,
@@ -49,7 +49,6 @@ export function RoutineForm({
     routine ? updateRoutine : createRoutine,
     INITIAL_ACTION_STATE,
   );
-  const [settledState, setSettledState] = useState(state);
   const [slots, setSlots] = useState<SlotDraft[]>(() =>
     routine
       ? routine.slots.map((slot) => ({
@@ -61,10 +60,9 @@ export function RoutineForm({
       : [],
   );
 
-  if (state !== settledState) {
-    setSettledState(state);
+  useEffect(() => {
     if (state.ok) onClose();
-  }
+  }, [state, onClose]);
 
   const workoutName = useMemo(
     () => new Map(workouts.map((workout) => [workout.id, workout.name])),

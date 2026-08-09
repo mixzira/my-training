@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Field, FormError, Input } from "@/components/ui/field";
@@ -23,12 +23,9 @@ export function CategoryForm({
     category ? updateCategory : createCategory,
     INITIAL_ACTION_STATE,
   );
-  const [settledState, setSettledState] = useState(state);
-
-  if (state !== settledState) {
-    setSettledState(state);
+  useEffect(() => {
     if (state.ok) onClose();
-  }
+  }, [state, onClose]);
 
   return (
     <form action={formAction} noValidate className="flex flex-col gap-md">

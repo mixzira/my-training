@@ -5,7 +5,13 @@ import { useId, useState } from "react";
 import { requestUpload } from "@/app/settings/upload-actions";
 import { Field } from "@/components/ui/field";
 import { cn } from "@/lib/cn";
-import type { UploadFolder } from "@/lib/storage/config";
+import {
+  MAX_IMAGE_EDGE_PX,
+  RESIZED_IMAGE_CONTENT_TYPE,
+  RESIZED_IMAGE_QUALITY,
+  type UploadFolder,
+  isImageContentType,
+} from "@/lib/storage/config";
 
 type Status =
   | { phase: "idle" }
@@ -21,6 +27,47 @@ function describeTypes(types: readonly string[]) {
   return types
     .map((type) => type.split("/")[1]?.toUpperCase() ?? type)
     .join(", ");
+}
+
+async function shrinkImage(file: File): Promise<Blob | null> {
+  if (!isImageContentType(file.type)) return null;
+
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(
+      1,
+      MAX_IMAGE_EDGE_PX / Math.max(bitmap.width, bitmap.height),
+    );
+
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+
+    const context = canvas.getContext("2d");
+    if (!context) {
+      bitmap.close();
+      return null;
+    }
+
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(
+        resolve,
+        RESIZED_IMAGE_CONTENT_TYPE,
+        RESIZED_IMAGE_QUALITY,
+      ),
+    );
+
+    if (!blob) return null;
+    if (blob.type !== RESIZED_IMAGE_CONTENT_TYPE) return null;
+    if (blob.size >= file.size) return null;
+
+    return blob;
+  } catch {
+    return null;
+  }
 }
 
 export function FileUploadField({
@@ -58,7 +105,9 @@ export function FileUploadField({
 
     setStatus({ phase: "uploading", fileName: file.name });
 
-    const ticket = await requestUpload(folder, file.type);
+    const payload = (await shrinkImage(file)) ?? file;
+
+    const ticket = await requestUpload(folder, payload.type);
 
     if (!ticket.ok) {
       setKey("");
@@ -66,19 +115,19 @@ export function FileUploadField({
       return;
     }
 
-    if (file.size > ticket.maxBytes) {
+    if (payload.size > ticket.maxBytes) {
       setKey("");
       setStatus({
         phase: "error",
-        message: `Arquivo de ${formatBytes(file.size)} excede o limite de ${formatBytes(ticket.maxBytes)}.`,
+        message: `Arquivo de ${formatBytes(payload.size)} excede o limite de ${formatBytes(ticket.maxBytes)}.`,
       });
       return;
     }
 
     const response = await fetch(ticket.uploadUrl, {
       method: "PUT",
-      body: file,
-      headers: { "content-type": file.type },
+      body: payload,
+      headers: { "content-type": payload.type },
     }).catch(() => null);
 
     if (!response) {

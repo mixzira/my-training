@@ -49,6 +49,7 @@ export function ExerciseCard({
         <div className="flex items-center gap-md rounded-lg border border-hairline bg-canvas p-lg">
           <video
             src={`${exercise.videoUrl}#t=0.001`}
+            crossOrigin="anonymous"
             muted
             playsInline
             preload="metadata"

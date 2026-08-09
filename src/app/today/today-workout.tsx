@@ -240,6 +240,7 @@ export function TodayWorkout({
                               else cardVideos.current.delete(index);
                             }}
                             src={`${item.videoUrl}#t=0.001`}
+                            crossOrigin="anonymous"
                             muted
                             playsInline
                             preload="metadata"
@@ -325,6 +326,7 @@ export function TodayWorkout({
             </div>
             <video
               src={previewItem.videoUrl}
+              crossOrigin="anonymous"
               autoPlay
               loop
               muted
